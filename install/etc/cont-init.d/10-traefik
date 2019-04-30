@@ -18,7 +18,7 @@ DASHBOARD_ADMIN_USER=${FASHBOARD_ADMIN_USER:-"admin"}
 DASHBOARD_AUTHENTICATION_TYPE=${DASHBOARD_AUTHENTICATION_TYPE:-"BASIC"}
 DOCKER_DEFAULT_HOST_RULE=${DOCKER_DEFAULT_HOST_RULE:-'""'}
 DOCKER_ENDPOINT=${DOCKER_ENDPOINT:-"unix:///var/run/docker.sock"}
-DOCKER_EXPOSE_CONTAINERS=${DOCKER_EXPOSE_CONTAINERS:-"TRUE"}
+DOCKER_EXPOSE_CONTAINERS=${DOCKER_EXPOSE_CONTAINERS:-"FALSE"}
 DOCKER_SWARM_MODE_REFRESH=${DOCKER_SWARM_MODE_REFRESH:-15}
 ENABLE_API=${ENABLE_API:-"TRUE"}
 ENABLE_COMPRESSION_HTTP=${ENABLE_COMPRESSION_HTTP:-"TRUE"}
@@ -116,6 +116,23 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	 #### Entrypoints Setup
 	 echo '[entryPoints]' >> /traefik/config/${CONFIG_FILE}
 
+     #### Dashboard
+     if [ "$ENABLE_DASHBOARD" = "TRUE" ]; then
+     	echo '  [entryPoints.'$API_ENTRYPOINT']' >> /traefik/config/${CONFIG_FILE}
+ 	    echo '    address = "'$API_IP':'$API_LISTEN_PORT'"' >> /traefik/config/${CONFIG_FILE}
+ 	    echo '    compress = true' >>/traefik/config/${CONFIG_FILE}
+	 	if [ "$ENABLE_DASHBOARD_AUTHENTICATION" = "TRUE" ]; then
+		 	case "$DASHBOARD_AUTHENTICATION_TYPE" in
+		        "BASIC")
+	                DASHBOARD_ENCRYPTED=`htpasswd -nb ${DASHBOARD_ADMIN_USER} ${DASHBOARD_ADMIN_PASS}`
+	                echo $DASHBOARD_ENCRYPTED
+	    		 	echo '      [entryPoints.'$API_ENTRYPOINT'.auth.basic]' >> /traefik/config/${CONFIG_FILE}
+	        	    echo '        users = ["'${DASHBOARD_ENCRYPTED}'"]' >> /traefik/config/${CONFIG_FILE}
+		        ;;
+		    esac
+	 	fi
+     fi
+
      #### HTTP / HTTPS Setup
 	 if [ "$ENABLE_HTTP" = "TRUE" ]; then 
 	 	echo '  [entryPoints.http]' >> /traefik/config/${CONFIG_FILE}
@@ -194,21 +211,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
         echo '    MinVersion = "'$TLS_MINIMUM_VERSION'"' >> /traefik/config/${CONFIG_FILE}
         echo '' >> /traefik/config/${CONFIG_FILE}
 
-         #### Dashboard
-     if [ "$ENABLE_DASHBOARD" = "TRUE" ]; then
-     	echo '  [entryPoints.'$API_ENTRYPOINT']' >> /traefik/config/${CONFIG_FILE}
- 	    echo '    address = "'$API_IP':'$API_PORT'"' >> /traefik/config/${CONFIG_FILE}
- 	    echo '    compress = true' >>/traefik/config/${CONFIG_FILE}
-	 	if [ "$ENABLE_DASHBOARD_AUTHENTICATION" = "TRUE" ]; then
-		 	case "$DASHBOARD_AUTHENTICATION_TYPE" in
-		        "BASIC")
-	                DASHBOARD_ENCRYPTED=`htpasswd -nb ${DASHBOARD_ADMIN_USER} ${DASHBOARD_ADMIN_PASS}`
-	    		 	echo '      [entrypoints.'$API_ENTRYPOINT'.auth.basic]' >> /traefik/config/${CONFIG_FILE}
-	        	    echo '         users = ["'${DASHBOARD_ENCRYPTED}'"]' >> /traefik/config/${CONFIG_FILE}
-		        ;;
-		    esac
-	 	fi
-     fi
+     echo '' >> /traefik/config/${CONFIG_FILE}
      	#### LetsEncrypt Support
      	if [ "$ENABLE_LETSENCRYPT" = "TRUE" ]; then
 	     	mkdir -p /traefik/certs

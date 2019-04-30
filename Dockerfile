@@ -3,7 +3,8 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
 ENV TRAEFIK_VERSION=1.7.11 \
-    TRAEFIK_CERT_DUMPER_VERSION=2.3.4
+    TRAEFIK_CERT_DUMPER_VERSION=2.3.4 \ 
+    ENABLE_SMTP=FALSE
 
 ### Download Traefik
 RUN set -x && \

@@ -1,3 +1,7 @@
+## 0.5 2019-04-30 <dave at tiredofit dot ca>
+
+* Fix Authentication for Dashboard
+
 ## 0.4 2019-04-30 <dave at tiredofit dot ca>
 
 * Add logrotation

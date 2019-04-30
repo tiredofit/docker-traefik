@@ -14,7 +14,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 
 * Sane Defaults to have a working solution by just running the image
 * Automatically generates configuration files on startup, or option to use your own
-* Supports most traditional use cases
+* Supports most traditional use cases w/Docker
 * Choice of Logging (Console, File w/logrotation
 
 *This is an incredibly complex piece of software that will tries to get you up and running with sane defaults, you will need to switch eventually over to manually configuring the configuration file when depending on your usage case*
@@ -60,6 +60,7 @@ The following image tags are available:
 
 * `latest` - Traefik 1.7.x Branch w/Alpine Linux
 * `1.7-latest` - Traefik 1.7.x Branch w/Alpine Linux
+* `2.0-latest` - Traefil 2.0 Alpha Branch w/Alpine Linux
 
 # Quick Start
 
@@ -125,7 +126,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | `DOCKER_DEFAULT_HOST_RULE` | Docker Access rule - Default ` ` |
 | `ENABLE_DOCKER_SWARM_MODE` | Enable Swarm Mode - Default `FALSE` |
 | `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds - Default `15` |
-| `DOCKER_EXPOSE_CONTAINERS` | Expose Containers by Default - Default `TRUE` |
+| `DOCKER_EXPOSE_CONTAINERS` | Expose Containers by Default - Default `FALSE` |
 
 #### HTTP/HTTPS Settings
 
