@@ -82,7 +82,7 @@ The following directories/files should be mapped for persistent storage in order
 |-----------|-------------|
 | `/traefik/config` | (Optional) - LemonLDAP core configuration files. Auto Generates on Container startup |
 | `/traefik/logs` | (Optional) - Logfiles if you wish to store to files |
-| `traefik/certs` | (Optional) - If you wish to utilize ACME/LetsEncrypt Certificates or SSL map this directory |
+| `/traefik/certs` | (Optional) - If you wish to utilize ACME/LetsEncrypt Certificates or SSL map this directory |
 | `/var/run/docker.sock` | Easiest way to get going - Map the hosts docker socket to the container |
 
 ### Environment Variables
@@ -164,6 +164,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | `LETSENCRYPT_DNS_DOMAIN1_SANS` | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`
 | `LETSENCRYPT_DNS_DOMAIN2_MAIN` | Similar to above, with additional number tacked on.. |
 | `LETSENCRYPT_DNS_DOMAIN2_SANS` | Similar to above with additional number tacked on.. |
+
 **If using DNS Challenges, you will need to add additional Environment Variables for your DNS servers API/credentials** See Traefik Documentation.
 
 #### API / Dashboard Settings
