@@ -1,0 +1,21 @@
+#!/usr/bin/with-contenv bash
+
+while [ ! -f /tmp/state/99-container-init ]
+do
+  sleep 1
+done
+
+CONFIG_FILE=${CONFIG_FILE:-"config.toml"}
+
+### Set Debug Mode
+if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
+    set -x
+fi
+
+if [ ! -f /tmp/state/10-traefik ]; then
+	echo 'Initialization Complete' >/tmp/state/10-traefik
+fi
+
+echo ''
+echo '** [traefik] Starting traefik'
+exec traefik -c /traefik/config/${CONFIG_FILE}

@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+ 
+  traefik-app:
+    image: tiredofit/traefik
+    container_name: traefik-app
+    environment:
+      - ZABBIX_HOSTNAME=traefik-app
+    ports:
+      - 80:80
+      - 443:443
+    expose:
+      - 8080
+    volumes:
+      - ./config:/traefik/config
+      - ./logs:/traefik/logs
+      - ./certs:/traefik/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels: 
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:dashboard.example.com
+      - traefik.port=8080
+      - traefik.protocol=http
+      - traefik.docker.network=nginx-proxy
+    networks:
+      - proxy
+    restart: always
+
+networks:
+  proxy:
+    external: true
+
