@@ -3,7 +3,7 @@ version: '2'
 services:
  
   traefik-app:
-    image: tiredofit/traefik
+    image: tiredofit/traefik:2.0-latest
     container_name: traefik-app
     environment:
       - ZABBIX_HOSTNAME=traefik-app

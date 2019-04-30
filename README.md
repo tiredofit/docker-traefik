@@ -14,7 +14,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 
 * Sane Defaults to have a working solution by just running the image
 * Automatically generates configuration files on startup, or option to use your own
-* Supports most traditional use cases w/Docker
+* Supports most traditional use cases
 * Choice of Logging (Console, File w/logrotation
 
 *This is an incredibly complex piece of software that will tries to get you up and running with sane defaults, you will need to switch eventually over to manually configuring the configuration file when depending on your usage case*
@@ -60,7 +60,7 @@ The following image tags are available:
 
 * `latest` - Traefik 1.7.x Branch w/Alpine Linux
 * `1.7-latest` - Traefik 1.7.x Branch w/Alpine Linux
-* `2.0-latest` - Traefil 2.0 Alpha Branch w/Alpine Linux
+* `2.0-latest` - Traefik 1.7.x2.0 Alpha Branch w/Alpine Linux
 
 # Quick Start
 

@@ -2,7 +2,7 @@ FROM tiredofit/alpine:3.9
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=1.7.11 \
+ENV TRAEFIK_VERSION=2.0.0-alpha4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.3.4 \ 
     ENABLE_SMTP=FALSE
 
@@ -14,7 +14,7 @@ RUN set -x && \
             apache2-utils \
             && \
     \
-    curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_linux-amd64 --output /usr/local/bin/traefik && \
+    curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_v${TRAEFIK_VERSION}_linux_amd64.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
     chmod +x /usr/local/bin/traefik && \
     \
 ### Download Certificate Dumper

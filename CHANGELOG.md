@@ -1,6 +1,6 @@
 ## 0.5 2019-04-30 <dave at tiredofit dot ca>
 
-* Fix Authentication for Dashboard
+* Fix Dashboard Authentication and Display
 
 ## 0.4 2019-04-30 <dave at tiredofit dot ca>
 
