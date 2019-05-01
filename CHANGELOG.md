@@ -1,3 +1,9 @@
+## 0.6 2019-04-30 <dave at tiredofit dot ca>
+
+* Fix for DNS Resolvers when validating against Letsencrypt
+* Change LETSENCRYPT_DYNAMIC_GENERATE to LETSENCRYPT_ONHOST_GENERATE (Default: True) and LETSENCRYPT_ONDEMAND_GENERATE (Default: False)
+* Cleanup of code
+
 ## 0.5 2019-04-30 <dave at tiredofit dot ca>
 
 * Fix Authentication for Dashboard

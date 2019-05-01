@@ -41,7 +41,8 @@ HTTP_LISTEN_PORT=${HTTP_LISTEN_PORT:-80}
 HTTPS_LISTEN_PORT=${HTTPS_LISTEN_PORT:-443}
 LETSENCRYPT_CHALLENGE=${LETSENCRYPT_CHALLENGE:-"HTTP"}
 LETSENCRYPT_DNS_CHALLENGE_DELAY=${LETSENCRYPT_DNS_CHALLENGE_DELAY:-15}
-LETSENCRYPT_DYNAMIC_GENERATE=${LETSENCRYPT_DYNAMIC_GENERATE:-"FALSE"}
+LETSENCRYPT_ONHOST_GENERATE=${LETSENCRYPT_ONHOST_GENERATE:-"TRUE"}
+LETSENCRYPT_ONDEMAND_GENERATE=${LETSENCRYPT_ONDEMAND_GENERATE:-"FALSE"}
 LETSENCRYPT_KEYTYPE=${LEYSENCRYPT_KEYTYPE:-"RSA4096"}
 LETSENCRYPT_SERVER=${LETSENCRYPT_SERVER:-"PRODUCTION"}
 LETSENCRYPT_STORAGE=${LETSENCRYPT_STORAGE:-"/traefik/certs/acme.json"}
@@ -125,7 +126,6 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		 	case "$DASHBOARD_AUTHENTICATION_TYPE" in
 		        "BASIC")
 	                DASHBOARD_ENCRYPTED=`htpasswd -nb ${DASHBOARD_ADMIN_USER} ${DASHBOARD_ADMIN_PASS}`
-	                echo $DASHBOARD_ENCRYPTED
 	    		 	echo '      [entryPoints.'$API_ENTRYPOINT'.auth.basic]' >> /traefik/config/${CONFIG_FILE}
 	        	    echo '        users = ["'${DASHBOARD_ENCRYPTED}'"]' >> /traefik/config/${CONFIG_FILE}
 		        ;;
@@ -224,12 +224,16 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	        echo '  storage = "'${LETSENCRYPT_STORAGE}'"' >> /traefik/config/${CONFIG_FILE}
 			echo '  entryPoint = "https"' >> /traefik/config/${CONFIG_FILE}
 			#### Dyanmically Generate Certificates
-			if [ "$LETSENCRYPT_DYNAMIC_GENERATE" = "TRUE" ]; then
+			if [ "$LETSENCRYPT_ONHOST_GENERATE" = "TRUE" ]; then
 	        	echo '  onHostRule = true' >> /traefik/config/${CONFIG_FILE}
 	        else
 	        	echo '  onHostRule = false' >> /traefik/config/${CONFIG_FILE}
 	        fi
-
+			if [ "$LETSENCRYPT_ONDEMAND_GENERATE" = "TRUE" ]; then
+	        	echo '  onDemand = true' >> /traefik/config/${CONFIG_FILE}
+	        else
+	        	echo '  onDemand = false' >> /traefik/config/${CONFIG_FILE}
+	        fi
 	        #### Enable Debug Logging
 	        if [ "$ENABLE_LETSENCRYPT_LOG" = "TRUE" ]; then
 	        	echo '  acmeLogging = true' >> /traefik/config/${CONFIG_FILE}
@@ -254,7 +258,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 				#### Add DNS Provider (Must use additional Environment Variables, See Traefik Doc
 				    echo '    provider="'$LETSENCRYPT_DNS_PROVIDER'"' >>/traefik/config/${CONFIG_FILE}
 			    #### Add DNS Resolvers if provided
-			        if [ ! -n "$LETSENCRYPT_DNS_RESOLVER" ]; then
+			        if [ -n "$LETSENCRYPT_DNS_RESOLVER" ]; then
 						resolvers=$(echo $LETSENCRYPT_DNS_RESOLVER | tr "," "\n")
 				        counter=1
 				        for ns in $resolvers

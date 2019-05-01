@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-while [ ! -f /tmp/state/99-container-init ]
+while [ ! -f /tmp/state/10-init-traefik ]
 do
   sleep 1
 done

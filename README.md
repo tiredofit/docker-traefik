@@ -15,7 +15,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 * Sane Defaults to have a working solution by just running the image
 * Automatically generates configuration files on startup, or option to use your own
 * Supports most traditional use cases w/Docker
-* Choice of Logging (Console, File w/logrotation
+* Choice of Logging (Console, File w/logrotation)
 
 *This is an incredibly complex piece of software that will tries to get you up and running with sane defaults, you will need to switch eventually over to manually configuring the configuration file when depending on your usage case*
 
@@ -155,11 +155,13 @@ By Default this image is ready to run out of the box, without having to alter an
 | `ENABLE_LETSENCRYPT` | Enable LetsEncrypt Certificate Generation - Default `TRUE`
 | `LETSENCRYPT_EMAIL` | Email address to register with Letsencrypt |
 | `LETSENCRYPT_CHALLENGE` | Use `HTTP`, `TLS`, or `DNS` Challenges - Default `HTTP` |
-| `LETSENCRYPT_DYNAMIC_GENERATE` | Dynamically Generate Certificates on First Load of site - Default `FALSE` |
+| `LETSENCRYPT_ONHOST_GENERATE` | Dynamically Generate Certificates on start of container - Default `TRUE` |
+| `LETSENCRYPT_ONDEMAND_GENERATE` | Dynamically Generate Certificates on First Load of site - Default `FALSE` |
 | `LETSENCRYPT_KEYTYPE` | Keytype to use `EC256` `EC384` `RSA2048` `RSA4096` `RSA8192` - Default `RSA4096` |
 | `LETSENCRYPT_SERVER` | Use `PRODUCTION` or `STAGING` server - Default `PRODUCTION` |
 | `LETSENCRYPT_STORAGE` | Where to store Acme certificates - Default `/traefik/certs/acme.json` |
 | `LETSENCRYPT_DNS_PROVIDER` | See [Traefik Documentation](https://docs.traefik.io) for values if using `DNS` Challenge |
+| `LETSENCRYPT_DNS_RESOLVER` | Comma Seperated values values if using `DNS` Challenge e.g. `1.1.1.1:53,1.0.0.1:53` |
 | `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challengnging - Default `15` |
 | `LETSENCRYPT_DNS_DOMAIN1_MAIN` | Single Value Domain Name for Wildcards e.g. `local1.com`
 | `LETSENCRYPT_DNS_DOMAIN1_SANS` | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`
