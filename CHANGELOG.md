@@ -1,3 +1,7 @@
+## 0.8.1 2019-05-04 <dave at tiredofit dot ca>
+
+* Zabbix Patchup
+
 ## 0.8 2019-05-04 <dave at tiredofit dot ca>
 
 * Add Zabbix Monitoring Template and script

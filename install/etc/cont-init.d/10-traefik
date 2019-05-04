@@ -58,7 +58,7 @@ TRAEFIK_LOG_LEVEL=${TRAEFIK_LOG_LEVEL:-"ERROR"}
 TRAEFIK_LOG_TYPE=${TRAEFIK_LOG_TYPE:-"console"}
 TRUSTED_IPS=${TRUSTED_IPS:-"127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"}
 
-if [ "$ENABLE_ZABBIX" = "TRUE ]; then
+if [ "$ENABLE_ZABBIX" = "TRUE" ]; then
     echo "* * * * * zabbix /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh" >> /assets/cron/crontab.txt
 fi
 
