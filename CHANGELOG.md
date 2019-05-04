@@ -1,3 +1,11 @@
+## 0.8 2019-05-04 <dave at tiredofit dot ca>
+
+* Add Zabbix Monitoring Template and script
+
+## 0.7 2019-05-02 <dave at tiredofit dot ca>
+
+* Fix for Logrotate not creating new file
+
 ## 0.6 2019-04-30 <dave at tiredofit dot ca>
 
 * Fix for DNS Resolvers when validating against Letsencrypt

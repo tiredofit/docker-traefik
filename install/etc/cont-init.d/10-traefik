@@ -58,10 +58,14 @@ TRAEFIK_LOG_LEVEL=${TRAEFIK_LOG_LEVEL:-"ERROR"}
 TRAEFIK_LOG_TYPE=${TRAEFIK_LOG_TYPE:-"console"}
 TRUSTED_IPS=${TRUSTED_IPS:-"127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"}
 
-    if [ ! -n "$LETSENCRYPT_EMAIL" ]; then
-        echo '** [traefik] ERROR: No `LETSENCRYPT_EMAIL` value populated. Set a value or disable `ENABLE_LETSENCRYPT` - Exiting..'
-        exit 1
-    fi
+if [ "$ENABLE_ZABBIX" = "TRUE ]; then
+    echo "* * * * * zabbix /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh" >> /assets/cron/crontab.txt
+fi
+
+if [ ! -n "$LETSENCRYPT_EMAIL" ]; then
+    echo '** [traefik] ERROR: No `LETSENCRYPT_EMAIL` value populated. Set a value or disable `ENABLE_LETSENCRYPT` - Exiting..'
+    exit 1
+fi
 
 if [ "$ENABLE_LETSENCRYPT" = "TRUE" ]; then
     if [ ! -n "$LETSENCRYPT_EMAIL" ]; then

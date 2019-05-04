@@ -7,6 +7,6 @@
     dateext
     sharedscripts
     postrotate
-    kill -1 traefik
+    kill -USR1 `pgrep traefik`
     endscript
 }
