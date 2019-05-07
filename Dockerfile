@@ -1,4 +1,4 @@
-FROM registry.selfdesign.org/docker/alpine/3.9
+FROM tiredofit/alpine:3.9
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
