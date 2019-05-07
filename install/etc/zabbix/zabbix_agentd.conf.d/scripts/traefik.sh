@@ -19,6 +19,7 @@ function trapper {
 	uptime=$(echo "$output" | jq '.["uptime_sec"]')
 	status_code_count=$(echo "$output" | jq '.["status_code_count"]')
 	total_status_200=$(echo "$output" | jq '.["total_status_code_count"]["200"]')
+	total_status_204=$(echo "$output" | jq '.["total_status_code_count"]["204"]')
 	total_status_301=$(echo "$output" | jq '.["total_status_code_count"]["301"]')
 	total_status_302=$(echo "$output" | jq '.["total_status_code_count"]["302"]')
 	total_status_303=$(echo "$output" | jq '.["total_status_code_count"]["303"]')
@@ -27,6 +28,7 @@ function trapper {
 	total_status_401=$(echo "$output" | jq '.["total_status_code_count"]["401"]')
 	total_status_403=$(echo "$output" | jq '.["total_status_code_count"]["403"]')
 	total_status_404=$(echo "$output" | jq '.["total_status_code_count"]["404"]')
+	total_status_407=$(echo "$output" | jq '.["total_status_code_count"]["407"]')
 	total_status_499=$(echo "$output" | jq '.["total_status_code_count"]["499"]')
 	total_status_500=$(echo "$output" | jq '.["total_status_code_count"]["500"]')
 	total_status_501=$(echo "$output" | jq '.["total_status_code_count"]["501"]')
@@ -71,6 +73,8 @@ function trapper {
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[response.size.total] -o `echo $total_response_size`
 	if [ "$total_status_200" = "null" ] || [ -z "$total_status_200" ]; then total_status_200=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.200] -o `echo $total_status_200`
+	if [ "$total_status_204" = "null" ] || [ -z "$total_status_204" ]; then total_status_200=0; fi;
+	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.204] -o `echo $total_status_204`
 	if [ "$total_status_301" = "null" ] || [ -z "$total_status_301" ]; then total_status_302=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.301] -o `echo $total_status_301`
 	if [ "$total_status_302" = "null" ] || [ -z "$total_status_302" ]; then total_status_302=0; fi;
@@ -85,6 +89,10 @@ function trapper {
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.403] -o `echo $total_status_403`
 	if [ "$total_status_404" = "null" ] || [ -z "$total_status_404" ]; then total_status_404=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.404] -o `echo $total_status_404`
+	if [ "$total_status_407" = "null" ] || [ -z "$total_status_407" ]; then total_status_404=0; fi;
+	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.407] -o `echo $total_status_407`
+	if [ "$total_status_499" = "null" ] || [ -z "$total_status_499" ]; then total_status_404=0; fi;
+	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.499] -o `echo $total_status_499`
 	if [ "$total_status_500" = "null" ] || [ -z "$total_status_500" ]; then total_status_500=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.500] -o `echo $total_status_500`
 	if [ "$total_status_501" = "null" ] || [ -z "$total_status_501" ]; then total_status_501=0; fi;

@@ -59,7 +59,7 @@ TRAEFIK_LOG_TYPE=${TRAEFIK_LOG_TYPE:-"console"}
 TRUSTED_IPS=${TRUSTED_IPS:-"127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"}
 
 if [ "$ENABLE_ZABBIX" = "TRUE" ]; then
-    echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2>&1" >> /assets/cron/crontab.txt
+    echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >> /assets/cron/crontab.txt
 fi
 
 if [ ! -n "$LETSENCRYPT_EMAIL" ]; then

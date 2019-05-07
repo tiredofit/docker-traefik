@@ -1,3 +1,11 @@
+## 0.8.3 2019-05-07 <dave at tiredofit dot ca>
+
+* More Zabbix Metrics
+
+## 0.8.2 2019-05-06 <dave at tiredofit dot ca>
+
+* More Zabbix Metrics
+
 ## 0.8.1 2019-05-04 <dave at tiredofit dot ca>
 
 * Zabbix Patchup
