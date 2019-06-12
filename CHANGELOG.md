@@ -1,3 +1,15 @@
+## 0.9 2019-06-12 <dave at tiredofit dot ca>
+
+* Update Traefik to 1.7.12
+
+## 0.8.5 2019-05-23 <dave at tiredofit dot ca>
+
+* More Zabbix Metrics
+
+## 0.8.4 2019-05-09 <dave at tiredofit dot ca>
+
+* More Zabbix Metrics
+
 ## 0.8.3 2019-05-07 <dave at tiredofit dot ca>
 
 * More Zabbix Metrics
@@ -26,7 +38,7 @@
 
 ## 0.5 2019-04-30 <dave at tiredofit dot ca>
 
-* Fix Authentication for Dashboard
+* Fix Dashboard Authentication and Display
 
 ## 0.4 2019-04-30 <dave at tiredofit dot ca>
 
