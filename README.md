@@ -100,7 +100,7 @@ By Default this image is ready to run out of the box, without having to alter an
 
 | Parameter | Description |
 |-----------|-------------|
-| `SETUP_TYPE` | Default: `AUTO` to auto generate lemonldap-ng.ini on bootup, otherwise let admin control configuration. Set to `MANUAL` to stop auto generating|
+| `SETUP_TYPE` | Default: `AUTO` to auto generate config.toml on bootup, otherwise let admin control configuration. Set to `MANUAL` to stop auto generating|
 | `CONFIG_FILE` | Configuration file to load - Default `config.toml`  |
 | `CHECK_NEW_VERSION` | Check for new Traefik Release - Default `FALSE` |
 | `SEND_ANONYMOUS_USAGE` | Send Anonymous Usage Stats - Default `FALSE` |

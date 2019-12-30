@@ -1,3 +1,32 @@
+## 1.0.0 2019-12-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Update to support new tiredofit/alpine base image
+
+
+## 0.14.0 2019-12-20 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 1.7.20
+      - Alpine 3.11 Base
+
+
+## 0.13 2019-10-31 <dave at tiredofit dot ca>
+
+* Traefik 1.7.19
+
+## 0.12 2019-09-17 <dave at tiredofit dot ca>
+
+* Traefik 1.7.16
+
+## 0.11 2019-07-09 <dave at tiredofit dot ca>
+
+* Fix for Log rotation
+
+## 0.10 2019-07-02 <dave at tiredofit dot ca>
+
+* Update to Alpine 3.10
+
 ## 0.9 2019-06-12 <dave at tiredofit dot ca>
 
 * Update Traefik to 1.7.12

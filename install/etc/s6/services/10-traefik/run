@@ -1,21 +1,11 @@
 #!/usr/bin/with-contenv bash
 
-while [ ! -f /tmp/state/10-init-traefik ]
-do
-  sleep 1
-done
+source /assets/functions/*
+PROCESS_NAME="traefik"
+check_initialized
 
 CONFIG_FILE=${CONFIG_FILE:-"config.toml"}
+liftoff
 
-### Set Debug Mode
-if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
-    set -x
-fi
-
-if [ ! -f /tmp/state/10-traefik ]; then
-	echo 'Initialization Complete' >/tmp/state/10-traefik
-fi
-
-echo ''
-echo '** [traefik] Starting traefik'
+print_info "Starting traefik ${TRAEFIK_VERSION}"
 exec traefik -c /traefik/config/${CONFIG_FILE}

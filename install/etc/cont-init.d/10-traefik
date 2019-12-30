@@ -1,9 +1,7 @@
 #!/usr/bin/with-contenv bash
 
-### Set Debug Mode
-if [ "$DEBUG_MODE" = "TRUE" ] || [ "$DEBUG_MODE" = "true" ]; then
-    set -x
-fi
+source /assets/functions/*
+PROCESS_NAME="traefik"
 
 ### Set Defaults
 ACCESS_LOG_FILE=${ACCESS_LOG_FILE:-"/traefik/logs/access.log"}
@@ -84,7 +82,7 @@ fi
 mkdir -p /traefik/config
 
 if [ "$SETUP_TYPE" = "AUTO" ]; then
-	 echo '** [traefik] Autogenerating Configuration File'
+	 print_warn "Autogenerating Configuration File"
      ### Generate Config Template
      echo '# Custom Generated Traefik configuration file. Do not edit, instead set ENV Vars' > /traefik/config/${CONFIG_FILE}
      echo '# If you want to use your own config.toml file set SETUP_TYPE=MANUAL when starting container.' >> /traefik/config/${CONFIG_FILE}
@@ -304,7 +302,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	          				fi
 	          			done
 	          	## Revert back onHostRule if set
-	          		sed -i -e "s/onHostRule = true/onHostRule = false/g" /traefik/config/${CONFIG_FILE}
+#	          		sed -i -e "s/onHostRule = true/onHostRule = false/g" /traefik/config/${CONFIG_FILE}
 		        ;;
 		        esac
 	        echo '' >> /traefik/config/${CONFIG_FILE}
@@ -369,11 +367,10 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		fi
 	 fi
 else
-	 echo '** [traefik] Manual Configuration Mode Activated'
+	 print_warn "Manual Configuration Mode Activated"
 	 if [ ! -f /traefik/config/${CONFIG_FILE} ]; then
-	    echo '** [traefik] Traefik Configuration File found - Using..'
+	    print_warn "Traefik Configuration File found - Using.."
      fi
 fi
 
-mkdir -p /tmp/state
-touch /tmp/state/10-init-traefik
+liftoff
