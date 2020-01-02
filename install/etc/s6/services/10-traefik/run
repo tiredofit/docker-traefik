@@ -1,8 +1,10 @@
 #!/usr/bin/with-contenv bash
 
-source /assets/functions/*
+for s in /assets/functions/*; do source $s; done
 PROCESS_NAME="traefik"
-check_initialized
+
+check_container_initialized
+check_service_initialized init
 
 CONFIG_FILE=${CONFIG_FILE:-"config.toml"}
 liftoff
