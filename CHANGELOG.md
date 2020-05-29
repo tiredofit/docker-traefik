@@ -1,3 +1,33 @@
+## 1.0.6 2020-05-29 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for Docker Swarm when autogenerating configuration
+
+
+## 1.0.5 2020-04-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Enable Automatic Traefik Certificate Dumping Routines
+
+
+## 1.0.4 2020-04-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Update Traefik Cert Dumper to 2.7.0
+
+
+## 1.0.3 2020-04-07 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 1.7.24
+
+
+## 1.0.2 2020-02-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 1.7.21
+
+
 ## 1.0.1 2020-01-02 <dave at tiredofit dot ca>
 
    ### Changed

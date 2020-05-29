@@ -153,6 +153,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | Parameter | Description |
 |-----------|-------------|
 | `ENABLE_LETSENCRYPT` | Enable LetsEncrypt Certificate Generation - Default `TRUE`
+| `ENABLE_CERTIFICATE_DUMPER` | Enable Traefik Automatic certificate dumping routines from `LETSENCRYPT_STORAGE` file - Default `TRUE` |
 | `LETSENCRYPT_EMAIL` | Email address to register with Letsencrypt |
 | `LETSENCRYPT_CHALLENGE` | Use `HTTP`, `TLS`, or `DNS` Challenges - Default `HTTP` |
 | `LETSENCRYPT_ONHOST_GENERATE` | Dynamically Generate Certificates on start of container - Default `TRUE` |

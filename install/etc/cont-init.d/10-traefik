@@ -297,8 +297,8 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		fi
 		echo '  watch = true' >> /traefik/config/${CONFIG_FILE}
 		if [ $ENABLE_DOCKER_SWARM_MODE = "TRUE" ]; then
-			echo '  swarmMode = true' >> /traefik/config/${CONFIG_FILE}
-			echo '  swarmModeRefreshSeconds = '${DOCKER_SWARM_MODE_REFRESH} >> /traefik/config/${CONFIG_FILE}
+                        echo '  swarmMode = true' >> /traefik/config/${CONFIG_FILE}
+                        echo '  swarmModeRefreshSeconds = '${DOCKER_SWARM_MODE_REFRESH} >> /traefik/config/${CONFIG_FILE}
 		fi
 	 fi
 else

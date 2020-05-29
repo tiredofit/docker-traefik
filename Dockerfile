@@ -2,8 +2,8 @@ FROM tiredofit/alpine:3.11
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=1.7.20 \
-    TRAEFIK_CERT_DUMPER_VERSION=2.3.4 \
+ENV TRAEFIK_VERSION=1.7.24 \
+    TRAEFIK_CERT_DUMPER_VERSION=2.7.0 \
     DASHBOARD_ADMIN_USER=admin \
     DASHBOARD_ADMIN_PASS=traefik \
     ENABLE_API=TRUE \
@@ -25,7 +25,7 @@ RUN set -x && \
     chmod +x /usr/local/bin/traefik && \
     \
 ### Download Certificate Dumper
-    curl -ssL https://github.com/ldez/traefik-certs-dumper/releases/download/v${TRAEFIK_CERT_DUMPER_VERSION}/traefik-certs-dumper_v${TRAEFIK_CERT_DUMPER_VERSION}_linux_amd64.tar.gz | tar xvfz - -C /usr/local/bin traefik-certs-dumper && \
+    curl -ssL https://github.com/ldez/traefik-certs-dumper/releases/download/v${TRAEFIK_CERT_DUMPER_VERSION}/traefik-certs-dumper_v${TRAEFIK_CERT_DUMPER_VERSION}_linux_386.tar.gz | tar xvfz - -C /usr/local/bin traefik-certs-dumper && \
     chmod +x /usr/local/bin/traefik-certs-dumper && \
     \
 ### Cleanup

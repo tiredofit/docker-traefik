@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv bash
+
+for s in /assets/functions/*; do source $s; done
+PROCESS_NAME="traefik-cert-dumper"
+
+check_container_initialized
+check_service_initialized init
+
+liftoff
+
+print_info "Starting Traefik Certificate Dumper ${TRAEFIK_CERT_DUMPER_VERSION}"
+exec traefik-certs-dumper file --source ${LETSENCRYPT_STORAGE} \
+                               --dest `echo ${LETSENCRYPT_STORAGE} | sed "s#acme.json#dump/#g"` \
+                               --domain-subdir=true \
+                               --crt-name cert \
+                               --crt-ext .pem \
+                               --key-name key \
+                               --key-ext .pem \
+                               --clean \
+                               --watch
