@@ -1,6 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-### Set Defaults
 ACCESS_LOG_FILE=${ACCESS_LOG_FILE:-"/traefik/logs/access.log"}
 ACCESS_LOG_FORMAT=${ACCESS_LOG_FORMAT:-"common"}
 ACCESS_LOG_TYPE=${ACCESS_LOG_TYPE:-"console"}

@@ -1,12 +1,12 @@
 #!/usr/bin/with-contenv bash
 
-for s in /assets/functions/*; do source $s; done
+source /assets/functions/00-container
+prepare_service defaults single
+
 PROCESS_NAME="traefik"
 
 check_container_initialized
 check_service_initialized init
-
-CONFIG_FILE=${CONFIG_FILE:-"config.toml"}
 liftoff
 
 print_info "Starting traefik ${TRAEFIK_VERSION}"
