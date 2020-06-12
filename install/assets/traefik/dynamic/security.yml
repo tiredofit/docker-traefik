@@ -1,0 +1,7 @@
+http:
+  middlewares:
+    security:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        

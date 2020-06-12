@@ -1,8 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service defaults single
-
+prepare_service
 PROCESS_NAME="traefik"
 
 check_container_initialized
@@ -10,4 +9,4 @@ check_service_initialized init
 liftoff
 
 print_info "Starting traefik ${TRAEFIK_VERSION}"
-exec traefik -c /traefik/config/${CONFIG_FILE}
+exec traefik --configfile ${TRAEFIK_CONFIG_PATH}${TRAEFIK_CONFIG_FILE}

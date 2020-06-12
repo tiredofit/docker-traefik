@@ -1,8 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service single
-
+prepare_service
 PROCESS_NAME="traefik-cert-dumper"
 
 output_off

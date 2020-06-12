@@ -1,81 +1,95 @@
-## 1.1.0 2020-06-09 <dave at tiredofit dot ca>
-
-   ### Added
-      - Update to support tiredofit/alpine 5.0.0 base image
-
-
-## 1.0.6 2020-05-29 <dave at tiredofit dot ca>
+## 1.0.9 2020-06-05 <dave at tiredofit dot ca>
 
    ### Changed
-      - Fix for Docker Swarm when autogenerating configuration
+      - Move /etc/s6/services to /etc/services.available
 
 
-## 1.0.5 2020-04-07 <dave at tiredofit dot ca>
-
-   ### Added
-      - Enable Automatic Traefik Certificate Dumping Routines
-
-
-## 1.0.4 2020-04-07 <dave at tiredofit dot ca>
+## 1.0.8 2020-06-05 <dave at tiredofit dot ca>
 
    ### Added
-      - Update Traefik Cert Dumper to 2.7.0
+      - Added CERTIFICATE_DUMP_POST_HOOK environment variable to execute scripts or commands post Certificate dump
 
 
-## 1.0.3 2020-04-07 <dave at tiredofit dot ca>
-
-   ### Added
-      - Traefik 1.7.24
-
-
-## 1.0.2 2020-02-27 <dave at tiredofit dot ca>
+## 1.0.7 2020-05-01 <dave at tiredofit dot ca>
 
    ### Added
-      - Traefik 1.7.21
+      - Traefik 2.2.1
 
 
-## 1.0.1 2020-01-02 <dave at tiredofit dot ca>
+## 1.0.6 2020-04-23 <dave at tiredofit dot ca>
 
    ### Changed
-      - Additional changes to support new tiredofit/alpine base image
+      - Fix to allow various variables that allow multiple values to allow single values
 
 
-## 1.0.0 2019-12-29 <dave at tiredofit dot ca>
-
-   ### Added
-      - Update to support new tiredofit/alpine base image
-
-
-## 0.14.0 2019-12-20 <dave at tiredofit dot ca>
+## 1.0.5 2020-04-23 <dave at tiredofit dot ca>
 
    ### Added
-      - Traefik 1.7.20
-      - Alpine 3.11 Base
+      - Introduce TLS Curve Preferences
 
 
-## 0.13 2019-10-31 <dave at tiredofit dot ca>
+## 1.0.4 2020-04-23 <dave at tiredofit dot ca>
 
-* Traefik 1.7.19
+   ### Changed
+      - Tweak TLS Configuration
 
-## 0.12 2019-09-17 <dave at tiredofit dot ca>
 
-* Traefik 1.7.16
+## 1.0.3 2020-04-23 <dave at tiredofit dot ca>
 
-## 0.11 2019-07-09 <dave at tiredofit dot ca>
+   ### Changed
+      - Tweak to make HTTP to HTTPS redirection function properly
 
-* Fix for Log rotation
 
-## 0.10 2019-07-02 <dave at tiredofit dot ca>
+## 1.0.2 2020-04-23 <dave at tiredofit dot ca>
 
-* Update to Alpine 3.10
+   ### Changed
+      - Cleanup HTTP and HTTPS Middlewares
 
-## 0.9 2019-06-12 <dave at tiredofit dot ca>
 
-* Update Traefik to 1.7.12
+## 1.0.1 2020-04-23 <dave at tiredofit dot ca>
 
-## 0.8.5 2019-05-23 <dave at tiredofit dot ca>
+   ### Changed
+      - Patchup to Traefik Certificate Dumper exported path
 
-* More Zabbix Metrics
+
+## 1.0.0 2020-04-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Completely rewritten configuration generator
+      - See README for more details
+      - Traefik 2.2.0
+
+
+## 0.15 2019-11-01 <dave at tiredofit dot ca>
+
+* Add Traefik Migration Tool
+
+## 0.14 2019-11-01 <dave at tiredofit dot ca>
+
+* Traefik 2.0.4
+
+## 0.13 2019-08-27 <dave at tiredofit dot ca>
+
+* Traefik 2.0.0GA
+* Still working on Dynamic Configuration
+
+## 0.12 2019-08-27 <dave at tiredofit dot ca>
+
+* Traefik 2.0rc1
+
+## 0.11 2019-07-27 <dave at tiredofit dot ca>
+
+* WIP on rewriting configuration builder
+* Traefik 2.0beta1
+
+## 0.10 2019-07-09 <dave at tiredofit dot ca>
+
+* Change Logrotate functionality
+
+## 0.9 2019-07-02 <dave at tiredofit dot ca>
+
+* Alpine 3.10
+* Traefik 2.0alpha8
 
 ## 0.8.4 2019-05-09 <dave at tiredofit dot ca>
 

@@ -19,9 +19,8 @@ function trapper {
 	uptime=$(echo "$output" | jq '.["uptime_sec"]')
 	status_code_count=$(echo "$output" | jq '.["status_code_count"]')
 	total_status_200=$(echo "$output" | jq '.["total_status_code_count"]["200"]')
-	total_status_201=$(echo "$output" | jq '.["total_status_code_count"]["201"]')
+	total_status_204=$(echo "$output" | jq '.["total_status_code_count"]["201"]')
 	total_status_204=$(echo "$output" | jq '.["total_status_code_count"]["204"]')
-	total_status_206=$(echo "$output" | jq '.["total_status_code_count"]["206"]')
 	total_status_301=$(echo "$output" | jq '.["total_status_code_count"]["301"]')
 	total_status_302=$(echo "$output" | jq '.["total_status_code_count"]["302"]')
 	total_status_303=$(echo "$output" | jq '.["total_status_code_count"]["303"]')
@@ -79,8 +78,6 @@ function trapper {
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.201] -o `echo $total_status_201`
 	if [ "$total_status_204" = "null" ] || [ -z "$total_status_204" ]; then total_status_200=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.204] -o `echo $total_status_204`
-	if [ "$total_status_206" = "null" ] || [ -z "$total_status_204" ]; then total_status_200=0; fi;
-	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.206] -o `echo $total_status_206`
 	if [ "$total_status_301" = "null" ] || [ -z "$total_status_301" ]; then total_status_302=0; fi;
 	zabbix_sender -c /etc/zabbix/zabbix_agentd.conf -k status[code.301] -o `echo $total_status_301`
 	if [ "$total_status_302" = "null" ] || [ -z "$total_status_302" ]; then total_status_302=0; fi;

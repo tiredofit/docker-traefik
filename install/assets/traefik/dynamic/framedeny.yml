@@ -1,0 +1,6 @@
+http:
+  middlewares:
+    framedeny:
+      headers:
+        frameDeny: true
+        

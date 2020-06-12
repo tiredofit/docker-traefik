@@ -2,33 +2,42 @@ version: '3.7'
 services:
  
   traefik-app:
-    image: tiredofit/traefik
+    image: tiredofit/traefik:2.2-latest
     container_name: traefik-app
     environment:
-    - ZABBIX_HOSTNAME=traefik-app
+      - ZABBIX_HOSTNAME=traefik-app
+
+      - LETSENCRYPT_EMAIL=dnsadmin@example.com
+      - LETSENCRYPT_CHALLENGE=DNS
+      - LETSENCRYPT_DNS_PROVIDER=cloudflare
+
+      - CF_API_EMAIL=dnsadmin@example.com
+      - CF_API_KEY=randomapikeyfromcloudflare
+
+      - DASHBOARD_HOSTNAME=traefik.example.com
     ports:
-    - 80:80
-    - 443:443
-    expose:
-    - 8080
-    labels: 
-    - traefik.enable=true
-    - traefik.frontend.rule=Host:dashboard.example.com
-    - traefik.port=8080
-    - traefik.protocol=http
-    - traefik.docker.network=proxy
+      - 80:80
+      - 443:443
     volumes:
-    - ./config:/traefik/config
-    - ./logs:/traefik/logs
-    - ./certs:/traefik/certs
-    - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/traefik/config
+      - ./logs:/traefik/logs
+      - ./certs:/traefik/certs
+      - /var/run/docker.sock:/var/run/docker.sock
+      networks:
+      - proxy
+    restart: always
+
+  whoami:
+    container_name: whoami
+    image: containous/whoami:v1.3.0
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.example.com`) || Host(`whoami2.example.com`) 
+      - traefik.http.services.whoami.loadbalancer.server.port=80
     networks:
-    - proxy
-    - services
+      - proxy
     restart: always
 
 networks:
   proxy:
-    external: true
-  services:
     external: true

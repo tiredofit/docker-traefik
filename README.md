@@ -58,9 +58,9 @@ docker pull tiredofit/traefik:<tag>
 
 The following image tags are available:
 
-* `latest` - Traefik 1.7.x Branch w/Alpine Linux
+* `latest` - Traefik 2.2.x Branch w/Alpine Linux
 * `1.7-latest` - Traefik 1.7.x Branch w/Alpine Linux
-* `2.0-latest` - Traefil 2.0 Alpha Branch w/Alpine Linux
+* `2.0-latest` - Traefik 2.2 w/Alpine Linux
 
 # Quick Start
 
@@ -81,7 +81,8 @@ The following directories/files should be mapped for persistent storage in order
 
 | Folder    | Description |
 |-----------|-------------|
-| `/traefik/config` | (Optional) - LemonLDAP core configuration files. Auto Generates on Container startup |
+| `/traefik/config` | (Optional) - Traefik core configuration files. Auto Generates on Container startup |
+| `/traefik/config/custom` | (Optional) - If using manual mode and wish to add dynamic File configuration, add it in here (.yml) |
 | `/traefik/logs` | (Optional) - Logfiles if you wish to store to files |
 | `/traefik/certs` | (Optional) - If you wish to utilize ACME/LetsEncrypt Certificates or SSL map this directory |
 | `/var/run/docker.sock` | Easiest way to get going - Map the hosts docker socket to the container |
@@ -109,10 +110,14 @@ By Default this image is ready to run out of the box, without having to alter an
 
 | Parameter | Description |
 |-----------|-------------|
-| `ACCESS_LOG_FILE` | Location to store Access Log - Default `/traefik/logs/access.log` |
+| `ACCESS_LOG_FILE` | File to store access log - Same directory as `TRAEFIK_LOG_PATH` - Default `access.log` |
 | `ACCESS_LOG_FORMAT` | Format to store logs in `common` / `json` - Default `common` |
 | `ACCESS_LOG_TYPE` | Display logs via `CONSOLE` or write to `FILE` - Default `CONSOLE` |
-| `TRAEFIK_LOG_FILE` | Location to store Access Log - Default `/traefik/logs/traefik.log` |
+| `TRAEFIK_CONFIG_FILE` | Traefik config file - Default `config.yml`
+| `TRAEFIK_CONFIG_PATH` | Path where configuration stored - Default `/traefik/config/` |
+| `TRAEFIK_CONFIG_CUSTOM_PATH` | Where to store custom/dynamic files - Default `/traefik/config/custom/`
+| `TRAEFIK_LOG_FILE` | File to store Traefik Log - Default `/traefik/logs/traefik.log` |
+| `TRAEFIK_LOG_PATH` | Path to store Traefik logs - Default `/traefik/logs/` |
 | `TRAEFIK_LOG_FORMAT` | Format to store logs in `common` / `json` - Default `common` |
 | `TRAEFIK_LOG_TYPE` | Display logs via `CONSOLE` or write to `FILE` - Default `CONSOLE` |
 | `TRAEFIK_LOG_LEVEL` | Log levels `DEBUG` `INFO` `WARN` `ERROR` `FATAL` - Default `ERROR` |
@@ -123,7 +128,9 @@ By Default this image is ready to run out of the box, without having to alter an
 |-----------|-------------|
 | `ENABLE_DOCKER` | Enable Docker Mode - Default `TRUE`
 | `DOCKER_ENDPOINT` | How to connect to Docker - Default `unix:///var/run/docker.sock` |
-| `DOCKER_DEFAULT_HOST_RULE` | Docker Access rule - Default ` ` |
+| `DOCKER_CONSTANTS` | Docker Constraints - Default `""` |
+| `DOCKER_DEFAULT_HOST_RULE` | Docker Access rule - Default: Host(`{{ normalize .Name }}`)|
+| `DOCKER_DEFAULT_NETWORK` | Default Network for Traefik to operate on - Default `proxy`
 | `ENABLE_DOCKER_SWARM_MODE` | Enable Swarm Mode - Default `FALSE` |
 | `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds - Default `15` |
 | `DOCKER_EXPOSE_CONTAINERS` | Expose Containers by Default - Default `FALSE` |
@@ -133,37 +140,49 @@ By Default this image is ready to run out of the box, without having to alter an
 | Parameter | Description |
 |-----------|-------------|
 | `ENABLE_HTTP` | Enable HTTP Support - Default `TRUE` |
+| `HTTP_ENTRYPOINT` | Name of HTTP Entrypoint - Default `web` |
+| `ENABLE_HTTP_FORWARDED_HEADERS` | Enable HTTP Forwarded Headers - Default `FALSE` |
 | `HTTP_LISTEN_IP` | Address to bind for HTTP - Default `empty` |
 | `HTTP_LISTEN_PORT` | Port to bind for HTTP - Default `80` |
+| `HTTP_TIMEOUT_ACCEPTGRACE` | Accept Grace Timeout - Default `0` |
+| `HTTP_TIMEOUT_GRACE` |Grace Timeout - Default `10` |
+| `HTTP_TIMEOUT_IDLE` | Idle Timeout - Default `180` |
+| `HTTP_TIMEOUT_READ` | Read Timeout - Default `0` |
+| `HTTP_TIMEOUT_WRITE` | Write Timeout - Default `0` |
 | `ENABLE_COMPRESSION_HTTP` | Enable Gzip Compression - Default `TRUE` |
 | `ENABLE_HTTP_PROXY_PROTOCOL` | Enable HTTP Proxy Protocol Support - Default `FALSE` |
 | `ENABLE_HTTPS` | Enable HTTPS Support - Default `TRUE` |
+| `HTTPS_ENTRYPOINT` | Name of HTTP Entrypoint - Default `websecure` |
+| `ENABLE_HTTPS_FORWARDED_HEADERS` | Enable HTTPS Forwarded Headers - Default `FALSE` |
 | `HTTPS_LISTEN_IP` | Address to bind for HTTP - Default `empty` |
 | `HTTPS_LISTEN_PORT` | Port to bind for HTTPS - Default `443` |
+| `HTTPS_TIMEOUT_ACCEPTGRACE` | Accept Grace Timeout - Default `0` |
+| `HTTPS_TIMEOUT_GRACE` |Grace Timeout - Default `10` |
+| `HTTPS_TIMEOUT_IDLE` | Idle Timeout - Default `180` |
+| `HTTPS_TIMEOUT_READ` | Read Timeout - Default `0` |
+| `HTTPS_TIMEOUT_WRITE` | Write Timeout - Default `0` |
 | `ENABLE_COMPRESSION_HTTPS` | Enable Gzip Compression - Default `TRUE` |
 | `ENABLE_HTTPS_UPGRADE` | Automatically forward HTTP -> HTTPS - Default `TRUE`
 | `ENABLE_HTTPS_SNI_STRICT` | Enable Strict SNI Checking for Certificates - Default `FALSE` |
 | `ENABLE_HTTPS_PROXY_PROTOCOL` | Enable HTTP Proxy Protocol Support - Default `FALSE` |
 | `TRUSTED_IPS` | Use for Proxy Protocol Variables - Comma Seperated. Default - `127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16` |
 | `TLS_MINIMUM_VERSION` | Set TLS Minimum Version for HTTPS - Default `VersionTLS12` |
-| `TLS_CIPHERS` | Set Ciphers - Default `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,TLS_RSA_WITH_AES_128_GCM_SHA256,TLS_RSA_WITH_AES_256_GCM_SHA384,TLS_RSA_WITH_AES_128_CBC_SHA,TLS_RSA_WITH_AES_256_CBC_SHA` |
+| `TLS_CIPHERS` | Set Ciphers - Default `TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305` |
 
 #### LetsEncrypt Settings
 
 | Parameter | Description |
 |-----------|-------------|
 | `ENABLE_LETSENCRYPT` | Enable LetsEncrypt Certificate Generation - Default `TRUE`
-| `ENABLE_CERTIFICATE_DUMPER` | Enable Traefik Automatic certificate dumping routines from `LETSENCRYPT_STORAGE` file - Default `TRUE` |
 | `LETSENCRYPT_EMAIL` | Email address to register with Letsencrypt |
 | `LETSENCRYPT_CHALLENGE` | Use `HTTP`, `TLS`, or `DNS` Challenges - Default `HTTP` |
-| `LETSENCRYPT_ONHOST_GENERATE` | Dynamically Generate Certificates on start of container - Default `TRUE` |
-| `LETSENCRYPT_ONDEMAND_GENERATE` | Dynamically Generate Certificates on First Load of site - Default `FALSE` |
 | `LETSENCRYPT_KEYTYPE` | Keytype to use `EC256` `EC384` `RSA2048` `RSA4096` `RSA8192` - Default `RSA4096` |
 | `LETSENCRYPT_SERVER` | Use `PRODUCTION` or `STAGING` server - Default `PRODUCTION` |
-| `LETSENCRYPT_STORAGE` | Where to store Acme certificates - Default `/traefik/certs/acme.json` |
+| `LETSENCRYPT_STORAGE_FILE` | What file to store ACME certificates in - Default `acme.json` |
+| `LETSENCRYPT_STORAGE_PATH` | What path to store ACME certificates in: `/traefik/certs/` |
 | `LETSENCRYPT_DNS_PROVIDER` | See [Traefik Documentation](https://docs.traefik.io) for values if using `DNS` Challenge |
 | `LETSENCRYPT_DNS_RESOLVER` | Comma Seperated values values if using `DNS` Challenge e.g. `1.1.1.1:53,1.0.0.1:53` |
-| `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challengnging - Default `15` |
+| `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challenging - Default `15` |
 | `LETSENCRYPT_DNS_DOMAIN1_MAIN` | Single Value Domain Name for Wildcards e.g. `local1.com`
 | `LETSENCRYPT_DNS_DOMAIN1_SANS` | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`
 | `LETSENCRYPT_DNS_DOMAIN2_MAIN` | Similar to above, with additional number tacked on.. |
@@ -176,19 +195,20 @@ By Default this image is ready to run out of the box, without having to alter an
 | Parameter | Description |
 |-----------|-------------|
 | `ENABLE_API` | Enable Dashboard - Default `TRUE` |
-| `API_ENTRYPOINT` | Entrypoint for API - Default `traefik` |
 | `ENABLE_PING` | Enable Ping test/Health Check - Default `TRUE` |
-| `PING_ENTRYPOINT` | Entrypoint for Ping test - Default `traefik` |
-| `ENABLE_REST` | Enable REST functionality - Default `FALSE` |
-| `REST_ENTRYPOINT` | Entrypoint for REST - Default `traefik` |
-| `API_LISTEN_IP` | Address to bind for API/Dashboard - Default `empty` |
-| `API_LISTEN_PORT` | Port to bind for API/Dashboard - Default `8080` |
 | `ENABLE_DASHBOARD` | Enable Dashboard - Default `TRUE` |
+| `DASHBOARD_HOSTNAME` | Hostname to respond for Dashboard e.g. `traefik.example.com` |
 | `ENABLE_DASHBOARD_AUTHENTICATION` | Enable Dashboard Authentication - Default `TRUE` |
 | `DASHBOARD_ADMIN_USER` | Username for access to Dashboard - Default `admin` |
-| `DASHBOARD_ADMIN_PASS` | Password for access to Dashboard - Default `traefik` |
+| `DASHBOARD_ADMIN_PASS` | Password for access to Dashboard - Default `traefik`| `DASHBOARD_AUTHENTICATION` | Only type is `BASIC` at this time |
 
+#### Certificate Dumper Settings
       
+| Parameter | Description |
+|-----------|-------------|
+| `ENABLE_CERTIFICATE_DUMPER` | Enable Dumping of Certificates from acme.json - Default `TRUE` |
+| `CERTIFICATE_DUMPER_PATH` | Where to put the dumped certificates - Default `${LETSENCRYPT_STORAGE_PATH}/dump` |
+| `CERTIFICATE_DUMPER_POST_HOOK` | *optional* Argument or external script to execute post dumping of certificates Where to put the dumped certificates - e.g. `chmod 644 ${CERTIFICATE_DUMPER_PATH}` |
 
 ### Networking
 

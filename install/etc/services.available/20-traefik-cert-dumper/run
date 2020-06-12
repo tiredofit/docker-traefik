@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service defaults
+prepare_service
 PROCESS_NAME="traefik-cert-dumper"
 
 check_container_initialized
@@ -9,13 +9,18 @@ check_service_initialized init
 
 liftoff
 
+if [ -n "$CERTIFICATE_DUMP_POST_HOOK" ] ; then
+	posthook="--posthook ${CERTIFICATE_DUMP_POST_HOOK}"
+fi
+
 print_info "Starting Traefik Certificate Dumper ${TRAEFIK_CERT_DUMPER_VERSION}"
-exec traefik-certs-dumper file --source ${LETSENCRYPT_STORAGE} \
-                               --dest `echo ${LETSENCRYPT_STORAGE} | sed "s#acme.json#dump/#g"` \
+exec traefik-certs-dumper file --source ${LETSENCRYPT_STORAGE_PATH}${LETSENCRYPT_STORAGE_FILE} \
+                               --dest ${CERTIFICATE_DUMP_PATH} \
                                --domain-subdir=true \
                                --crt-name cert \
                                --crt-ext .pem \
                                --key-name key \
                                --key-ext .pem \
+                               --version v2 \
                                --clean \
-                               --watch
+                               ${posthook} --watch
