@@ -1,3 +1,9 @@
+## 1.0.10 2020-06-20 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Patchup to support reading both defaults and functions at runtime
+
+
 ## 1.0.9 2020-06-05 <dave at tiredofit dot ca>
 
    ### Changed

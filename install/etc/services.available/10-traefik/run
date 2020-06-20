@@ -1,7 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 source /assets/functions/00-container
-prepare_service
+prepare_service both
 PROCESS_NAME="traefik"
 
 check_container_initialized
