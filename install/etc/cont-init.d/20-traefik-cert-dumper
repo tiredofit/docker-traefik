@@ -7,7 +7,7 @@ PROCESS_NAME="traefik-cert-dumper"
 output_off
 ### Check to see if Enabled/Disabled
 
-if [ "$ENABLE_CERTIFICATE_DUMPER" = "FALSE" ] || [ "$ENABLE_CERTIFICATE_DUMPER" = "false" ] || [ "$ENABLE_LETSENCRYPT" = "FALSE" ] || [ "$ENABLE_LETSENCRYPT" = "false" ]; then
+if var_false $ENABLE_CERTIFICATE_DUMPER || var_false $ENABLE_LETSENCRYPT ; then
     print_notice "Disabling Certificate Dumper Functionality"
     service_stop `basename $0`
 fi
