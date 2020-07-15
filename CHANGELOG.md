@@ -1,3 +1,9 @@
+## 1.0.12 2020-07-15 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix missing default variables
+
+
 ## 1.0.11 2020-07-09 <dave at tiredofit dot ca>
 
    ### Added
