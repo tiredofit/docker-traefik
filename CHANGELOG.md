@@ -1,3 +1,9 @@
+## 1.0.13 2020-07-20 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.2.6
+
+
 ## 1.0.12 2020-07-15 <dave at tiredofit dot ca>
 
    ### Changed
