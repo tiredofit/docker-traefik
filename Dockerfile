@@ -1,8 +1,8 @@
-FROM tiredofit/alpine:3.11
+FROM tiredofit/alpine:3.12
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=1.7.24 \
+ENV TRAEFIK_VERSION=1.7.26 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.0 \
     DASHBOARD_ADMIN_USER=admin \
     DASHBOARD_ADMIN_PASS=traefik \

@@ -1,3 +1,10 @@
+## 1.1.1 2020-07-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 1.7.26
+      - Alpine 3.12
+
+
 ## 1.1.0 2020-06-09 <dave at tiredofit dot ca>
 
    ### Added
