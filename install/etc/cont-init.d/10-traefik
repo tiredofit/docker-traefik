@@ -4,384 +4,372 @@ source /assets/functions/00-container
 prepare_service
 PROCESS_NAME="traefik"
 
-if var_true "$ENABLE_ZABBIX" ; then
-    echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >> /assets/cron/crontab.txt
-fi
-
-if var_true "$ENABLE_LETSENCRYPT" ; then
-	sanity_var LETSENCRYPT_EMAIL "Letsencrypt Email address"
-    if [ "$LETSENCRYPT_CHALLENGE" = "DNS" ]; then
-    	sanity_var LETSENCRYPT_DNS_PROVIDER "Letsencrypt DNS Provider"
-    fi
+if var_true "$ENABLE_ZABBIX"; then
+	echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >>/assets/cron/crontab.txt
 fi
 
 mkdir -p "${TRAEFIK_CONFIG_PATH}"
-mkdir -p ${TRAEFIK_CONFIG_CUSTOM_PATH}
+mkdir -p "${TRAEFIK_CONFIG_CUSTOM_PATH}"
 
 if [ "$SETUP_TYPE" = "AUTO" ]; then
-    print_warn "Autogenerating Configuration File"
-    ### Generate Config Template
-    echo "# Custom Generated Traefik configuration file for version 2.2.x. Do not edit, instead set ENV Vars" > "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    echo "# If you want to use your own config.yml file set SETUP_TYPE=MANUAL when starting container." >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    echo "# Last Generated on" $(date) >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	if var_true "$ENABLE_LETSENCRYPT"; then
+		sanity_var LETSENCRYPT_EMAIL "Letsencrypt Email address"
+		if [ "$LETSENCRYPT_CHALLENGE" = "DNS" ]; then
+			sanity_var LETSENCRYPT_DNS_PROVIDER "Letsencrypt DNS Provider"
+		fi
+	fi
 
-    echo "global:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    #### Check for new updates and Anonymous reporting
-    if var_true "$CHECK_NEW_VERSION" ; then
-       echo "  checkNewVersion: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    else
-       echo "  checkNewVersion: false" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    fi
-    if var_true "$SEND_ANONYMOUS_USAGE" ; then
-       echo "  sendAnonymousUsage: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    else
-       echo "  sendAnonymousUsage: false" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    fi
+	print_warn "Autogenerating Configuration File"
+	### Generate Config Template
+	echo "# Custom Generated Traefik configuration file for version 2.2.x. Do not edit, instead set ENV Vars" >"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo "# If you want to use your own config.yml file set SETUP_TYPE=MANUAL when starting container." >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo "# Last Generated on $(date)" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
+	echo "global:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	#### Check for new updates and Anonymous reporting
+	if var_true "$CHECK_NEW_VERSION"; then
+		echo "  checkNewVersion: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	else
+		echo "  checkNewVersion: false" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	fi
+	if var_true "$SEND_ANONYMOUS_USAGE"; then
+		echo "  sendAnonymousUsage: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	else
+		echo "  sendAnonymousUsage: false" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	fi
 
-    #### Entrypoints Setup
-    echo 'entryPoints:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	#### Entrypoints Setup
+	echo 'entryPoints:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
-    #### HTTP / HTTPS Setup
-    print_debug "HTTP Enable"
-    if var_true "$ENABLE_HTTP" ; then
-	 	echo "  ${HTTP_ENTRYPOINT}:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo '    address: "'"${HTTP_LISTEN_IP}"':'"${HTTP_LISTEN_PORT}"'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	#### Transport Timeouts
-	 	echo "    transport:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "      respondingTimeouts:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         readTimeout: ${HTTP_TIMEOUT_READ}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         writeTimeout: ${HTTP_TIMEOUT_WRITE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         idleTimeout: ${HTTP_TIMEOUT_IDLE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        #### Lifecycle Timeouts
-        echo "      lifeCycle:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "         requestAcceptGraceTimeout: ${HTTP_TIMEOUT_ACCEPTGRACE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "         graceTimeout: ${HTTP_TIMEOUT_GRACE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        #### HTTP Proxy Protocol
-        print_debug "HTTP Proxy Protocol"
-        if var_true "$ENABLE_HTTP_PROXY_PROTOCOL" ; then
-	     	echo '    proxyProtocol:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        echo "       trustedIPs:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	#### HTTP / HTTPS Setup
+	print_debug "HTTP Enable"
+	if var_true "$ENABLE_HTTP"; then
+		echo "  ${HTTP_ENTRYPOINT}:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '    address: "'"${HTTP_LISTEN_IP}"':'"${HTTP_LISTEN_PORT}"'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Transport Timeouts
+		echo "    transport:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "      respondingTimeouts:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         readTimeout: ${HTTP_TIMEOUT_READ}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         writeTimeout: ${HTTP_TIMEOUT_WRITE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         idleTimeout: ${HTTP_TIMEOUT_IDLE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Lifecycle Timeouts
+		echo "      lifeCycle:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         requestAcceptGraceTimeout: ${HTTP_TIMEOUT_ACCEPTGRACE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         graceTimeout: ${HTTP_TIMEOUT_GRACE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### HTTP Proxy Protocol
+		print_debug "HTTP Proxy Protocol"
+		if var_true "$ENABLE_HTTP_PROXY_PROTOCOL"; then
+			echo '    proxyProtocol:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
-	        if [[ "$TRUSTED_IPS" == *","* ]]; then
-	        	ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
-	 	    	for ip in $ips
-	 	        	do
-        			echo "       - ${ip}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 		done
-		 	else
-		 		echo "       - ${TRUSTED_IPS}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 	fi
-        fi
+			if [[ "$TRUSTED_IPS" == *","* ]]; then
+				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
+				for ip in $ips; do
+					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				done
+			else
+				echo "       - ${TRUSTED_IPS}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+		fi
 		#### HTTP Forwarded Headers Protocol
 		print_debug "HTTP Forwarded Headers"
-        if var_true "$ENABLE_HTTP_FORWARDED_HEADERS" ; then
-	     	echo '    forwardedHeaders:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        echo "       trustedIPs:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        if [[ "$TRUSTED_IPS" == *","* ]]; then
-	        	ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
-	 	    	for ip in $ips
-	 	        	do
-        			echo "       - ${ip}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 		done
-		 	else
-		 		echo "       - ${TRUSTED_IPS}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 	fi
-        fi
-		if var_true "$ENABLE_HTTPS" ; then
-	        #### HTTPS Upgrade
-	        print_debug "HTTPS Upgrade"
-	     	if var_true "$ENABLE_HTTPS_UPGRADE" ; then
-		 		skiphttp="TRUE"
-		 		echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 		echo "      redirections:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-				echo "        entryPoint:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-				echo "           to: "${HTTPS_ENTRYPOINT}"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-				echo "           scheme: https" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-				echo "           permanent: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-				if [ "$skipmiddleware_http" != "TRUE" ] ; then
-	    			echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			    	echo "      - https_redirection@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		if var_true "$ENABLE_HTTP_FORWARDED_HEADERS"; then
+			echo '    forwardedHeaders:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			if [[ "$TRUSTED_IPS" == *","* ]]; then
+				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
+				for ip in $ips; do
+					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				done
+			else
+				echo "       - ${TRUSTED_IPS}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+		fi
+		if var_true "$ENABLE_HTTPS"; then
+			#### HTTPS Upgrade
+			print_debug "HTTPS Upgrade"
+			if var_true "$ENABLE_HTTPS_UPGRADE"; then
+				skiphttp="TRUE"
+				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "      redirections:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "        entryPoint:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "           to: ${HTTPS_ENTRYPOINT}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "           scheme: https" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "           permanent: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				if [ "$skipmiddleware_http" != "TRUE" ]; then
+					echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+					echo "      - https_redirection@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 				fi
 				skipmiddleware_http="TRUE"
 			fi
-	    fi
-    	#### HTTP Compression
-		if var_true "$ENABLE_COMPRESSION_HTTP" ; then
-			print_debug "HTTP Compression"
-			if [ "$skiphttp" != "TRUE" ] ; then
-            	echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-            fi
-			if [ "$skipmiddleware_http" != "TRUE" ] ; then
-	    		echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			fi
-		    echo "      - compression_http@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
 
-	    	if [ -v "HTTP_COMPRESSION_EXCLUDE" ]; then
-	    		sed -i "s#compress: {}#compress:#g" /assets/traefik/dynamic/compression_http.yml
-	    		echo "        excludedContentTypes:" /assets/traefik/dynamic/compression_http.yml
-		        if [[ "$HTTP_COMPRESSION_EXCLUDE" == *","* ]]; then
-		    		http_compression_exclude=$(echo "$HTTP_COMPRESSION_EXCLUDE" | tr "," "\n")
-		    		for type in $http_compression_exclude
-		        		do
-		        			echo "          - ${type}" >>  /assets/traefik/dynamic/compression_http.yml
+		#### HTTP Compression
+		if var_true "$ENABLE_COMPRESSION_HTTP"; then
+			print_debug "HTTP Compression"
+			if [ "$skiphttp" != "TRUE" ]; then
+				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+			if [ "$skipmiddleware_http" != "TRUE" ]; then
+				echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+			echo "      - compression_http@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+			if [ -v "HTTP_COMPRESSION_EXCLUDE" ]; then
+				sed -i "s#compress: {}#compress:#g" /assets/traefik/dynamic/compression_http.yml
+				echo "        excludedContentTypes:" /assets/traefik/dynamic/compression_http.yml
+				if [[ "$HTTP_COMPRESSION_EXCLUDE" == *","* ]]; then
+					http_compression_exclude=$(echo "$HTTP_COMPRESSION_EXCLUDE" | tr "," "\n")
+					for type in $http_compression_exclude; do
+						echo "          - ${type}" >>/assets/traefik/dynamic/compression_http.yml
 					done
 				else
-					echo "          - ${HTTP_COMPRESSION_EXCLUDE}" >>  /assets/traefik/dynamic/compression_http.yml
+					echo "          - ${HTTP_COMPRESSION_EXCLUDE}" >>/assets/traefik/dynamic/compression_http.yml
 				fi
 			fi
 		fi
 
-	    #### Middlewares
-    	if [ -v "HTTP_MIDDLEWARES" ]; then
-
+		#### Middlewares
+		if [ -v "HTTP_MIDDLEWARES" ]; then
 			print_debug "HTTP Middlewares"
-			if [ "$skiphttp" != "TRUE" ] ; then
-	        	echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        fi
-	        if [ "$skipmiddleware_http" != "TRUE" ] ; then
-	    		echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			if [ "$skiphttp" != "TRUE" ]; then
+				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
-	        if [[ "$HTTP_MIDDLEWARES" == *","* ]]; then
+			if [ "$skipmiddleware_http" != "TRUE" ]; then
+				echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+			if [[ "$HTTP_MIDDLEWARES" == *","* ]]; then
 				middlewares_http=$(echo "${HTTP_MIDDLEWARES}" | tr "," "\n")
-				for middleware in $middlewares_http
-	    			do
-	    			print_debug "${HTTP_ENTRYPOINT}: Adding ${middleware}"
-	    			echo "      - ${middleware}@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				for middleware in $middlewares_http; do
+					print_debug "${HTTP_ENTRYPOINT}: Adding ${middleware}"
+					echo "      - ${middleware}@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 				done
 			else
-				echo "      - ${HTTP_MIDDLEWARES}@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "      - ${HTTP_MIDDLEWARES}@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
 		fi
-    fi
+	fi
 
-    #### HTTPS Support
-    print_debug "HTTPS Enable"
-    if var_true "$ENABLE_HTTPS" ; then
-     	echo "  ${HTTPS_ENTRYPOINT}:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo '    address: "'${HTTPS_LISTEN_IP}':'${HTTPS_LISTEN_PORT}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	    #### Transport Timeouts
-	 	echo "    transport:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "      respondingTimeouts:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         readTimeout: ${HTTPS_TIMEOUT_READ}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         writeTimeout: ${HTTPS_TIMEOUT_WRITE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 	echo "         idleTimeout: ${HTTPS_TIMEOUT_IDLE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        #### Lifecycle Timeouts
-        echo "      lifeCycle:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "         requestAcceptGraceTimeout: ${HTTPS_TIMEOUT_ACCEPTGRACE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "         graceTimeout: ${HTTPS_TIMEOUT_GRACE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        #### HTTP Proxy Protocol
-        print_debug "HTTPS Proxy Protocol"
-        if var_true "$ENABLE_HTTPS_PROXY_PROTOCOL" ; then
-	     	echo '    proxyProtocol:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        echo "       trustedIPs:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        if [[ "$TRUSTED_IPS" == *","* ]]; then
-	        	ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
-	 	    	for ip in $ips
-	 	        	do
-        			echo "       - ${ip}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 		done
-		 	else
-		 		echo "       - ${TRUSTED_IPS}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 	fi
-        fi
+	#### HTTPS Support
+	print_debug "HTTPS Enable"
+	if var_true "$ENABLE_HTTPS"; then
+		echo "  ${HTTPS_ENTRYPOINT}:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '    address: "'${HTTPS_LISTEN_IP}':'${HTTPS_LISTEN_PORT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Transport Timeouts
+		echo "    transport:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "      respondingTimeouts:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         readTimeout: ${HTTPS_TIMEOUT_READ}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         writeTimeout: ${HTTPS_TIMEOUT_WRITE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         idleTimeout: ${HTTPS_TIMEOUT_IDLE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Lifecycle Timeouts
+		echo "      lifeCycle:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         requestAcceptGraceTimeout: ${HTTPS_TIMEOUT_ACCEPTGRACE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "         graceTimeout: ${HTTPS_TIMEOUT_GRACE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### HTTP Proxy Protocol
+		print_debug "HTTPS Proxy Protocol"
+		if var_true "$ENABLE_HTTPS_PROXY_PROTOCOL"; then
+			echo '    proxyProtocol:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			if [[ "$TRUSTED_IPS" == *","* ]]; then
+				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
+				for ip in $ips; do
+					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				done
+			else
+				echo "       - ${TRUSTED_IPS}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+		fi
 		#### HTTP Forwarded Headers Protocol
 		print_debug "HTTPS Forwarded Headers"
-        if var_true "$ENABLE_HTTPS_FORWARDED_HEADERS" ; then
-	     	echo '    forwardedHeaders:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        echo "       trustedIPs:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        if [[ "$TRUSTED_IPS" == *","* ]]; then
-	        	ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
-	 	    	for ip in $ips
-	 	        	do
-        			echo "       - ${ip}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 		done
-		 	else
-		 		echo "       - ${TRUSTED_IPS}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		 	fi
-        fi
-        print_debug "HTTPS Entrypoint: LetsEncrypt"
-    	if var_true "$ENABLE_LETSENCRYPT" ; then
-	 		skiphttps="TRUE"
-    		echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo "      tls:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo "        options: default" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo "        certResolver: letsencrypt" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		if var_true "$ENABLE_HTTPS_FORWARDED_HEADERS"; then
+			echo '    forwardedHeaders:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			if [[ "$TRUSTED_IPS" == *","* ]]; then
+				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
+				for ip in $ips; do
+					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				done
+			else
+				echo "       - ${TRUSTED_IPS}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+		fi
+		print_debug "HTTPS Entrypoint: LetsEncrypt"
+		if var_true "$ENABLE_LETSENCRYPT"; then
+			skiphttps="TRUE"
+			echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "      tls:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "        options: default" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "        certResolver: letsencrypt" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		fi
 
-    	#### HTTPS Compression
-    	print_debug "HTTPS Compression"
-		if var_true "$ENABLE_COMPRESSION_HTTPS" ; then
-			if [ "$skiphttps" != "TRUE" ] ; then
-            	echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-            fi
-            skipmiddleware_https="TRUE"
-        	echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		    echo "      - compression_https@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### HTTPS Compression
+		print_debug "HTTPS Compression"
+		if var_true "$ENABLE_COMPRESSION_HTTPS"; then
+			if [ "$skiphttps" != "TRUE" ]; then
+				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+			skipmiddleware_https="TRUE"
+			echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "      - compression_https@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
-	    	if [ -v "HTTPS_COMPRESSION_EXCLUDE" ]; then
-	    		sed -i "s#compress: {}#compress:#g" /assets/traefik/dynamic/compression_https.yml
-	    		echo "        excludedContentTypes:" /assets/traefik/dynamic/compression_https.yml
-		        if [[ "$HTTPS_COMPRESSION_EXCLUDE" == *","* ]]; then
-		    		https_compression_exclude=$(echo "$HTTPS_COMPRESSION_EXCLUDE" | tr "," "\n")
-		    		for type in $https_compression_exclude
-		        		do
-		        			echo "          - ${type}" >>  /assets/traefik/dynamic/compression_https.yml
+			if [ -v "HTTPS_COMPRESSION_EXCLUDE" ]; then
+				sed -i "s#compress: {}#compress:#g" /assets/traefik/dynamic/compression_https.yml
+				echo "        excludedContentTypes:" /assets/traefik/dynamic/compression_https.yml
+				if [[ "$HTTPS_COMPRESSION_EXCLUDE" == *","* ]]; then
+					https_compression_exclude=$(echo "$HTTPS_COMPRESSION_EXCLUDE" | tr "," "\n")
+					for type in $https_compression_exclude; do
+						echo "          - ${type}" >>/assets/traefik/dynamic/compression_https.yml
 					done
 				else
-					echo "          - ${HTTPS_COMPRESSION_EXCLUDE}" >>  /assets/traefik/dynamic/compression_http.yml
+					echo "          - ${HTTPS_COMPRESSION_EXCLUDE}" >>/assets/traefik/dynamic/compression_http.yml
 				fi
 			fi
 		fi
 
-	    #### Middlewares
-	    print_debug "HTTPS Middlewares"
-    	if [ -v "HTTPS_MIDDLEWARES" ]; then
-			if [ "$skiphttps" != "TRUE" ] ; then
-	        	echo "    http:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        fi
-	        if [ "$skipmiddleware_https" != "TRUE" ] ; then
-	    		echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Middlewares
+		print_debug "HTTPS Middlewares"
+		if [ -v "HTTPS_MIDDLEWARES" ]; then
+			if [ "$skiphttps" != "TRUE" ]; then
+				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
-	        if [[ "$HTTPS_MIDDLEWARES" == *","* ]]; then
+			if [ "$skipmiddleware_https" != "TRUE" ]; then
+				echo "      middlewares:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			fi
+			if [[ "$HTTPS_MIDDLEWARES" == *","* ]]; then
 				middlewares_https=$(echo "$HTTPS_MIDDLEWARES" | tr "," "\n")
-				for middleware in $middlewares_https
-		    		do
-		    		print_debug "${HTTPS_ENTRYPOINT}: Adding ${middleware}"
-		    		echo "      - ${middleware}@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				for middleware in $middlewares_https; do
+					print_debug "${HTTPS_ENTRYPOINT}: Adding ${middleware}"
+					echo "      - ${middleware}@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 				done
 			else
-				echo "      - ${HTTPS_MIDDLEWARES}@file" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				echo "      - ${HTTPS_MIDDLEWARES}@file" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
 		fi
-    fi
-
-    ### TLS Options
-	echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	echo 'tls:' > "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
-	echo '  options:' >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
-	echo '    default:' >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
-	#### TLS Minimum Version
-    echo '      MinVersion: "'$TLS_MINIMUM_VERSION'"' >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
-    #### SNI Strict Checking
-	if var_true "$ENABLE_HTTPS_SNI_STRICT" ; then
-		echo '      sniStrict: true' >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	fi
- 	#### Prefer Server Ciphers
-	if var_true "$TLS_PREFER_SERVER_CIPHERS" ; then
-		echo '      preferServerCipherSuites: true' >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+
+	### TLS Options
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo 'tls:' >"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	echo '  options:' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	echo '    default:' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	#### TLS Minimum Version
+	echo '      MinVersion: "'$TLS_MINIMUM_VERSION'"' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	#### SNI Strict Checking
+	if var_true "$ENABLE_HTTPS_SNI_STRICT"; then
+		echo '      sniStrict: true' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	fi
+	#### Prefer Server Ciphers
+	if var_true "$TLS_PREFER_SERVER_CIPHERS"; then
+		echo '      preferServerCipherSuites: true' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	fi
 	#### Curve Prferences
-	if [ -v "TLS_CURVE_PREFERENCES" ] ; then
-		echo "      curvePreferences:" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	if [ -v "TLS_CURVE_PREFERENCES" ]; then
+		echo "      curvePreferences:" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 		if [[ "$TLS_CURVE_PREFERENCES" == *","* ]]; then
 			curves=$(echo "$TLS_CURVE_PREFERENCES" | tr "," "\n")
-	    	for curve in $curves
-	        	do
-	        	echo "        - ${curve}" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+			for curve in $curves; do
+				echo "        - ${curve}" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 			done
 		else
-			echo "        - ${TLS_CURVE_PREFERENCES}" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+			echo "        - ${TLS_CURVE_PREFERENCES}" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 		fi
 	fi
 
 	#### TLS Ciphers available
-	if [ -v "TLS_CIPHERS" ] ; then
-		echo "      CipherSuites:" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	if [ -v "TLS_CIPHERS" ]; then
+		echo "      CipherSuites:" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 		if [[ "$TLS_CIPHERS" == *","* ]]; then
 			ciphers=$(echo "$TLS_CIPHERS" | tr "," "\n")
-	    	for cipher in $ciphers
-	        	do
-	        	echo "        - ${cipher}" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+			for cipher in $ciphers; do
+				echo "        - ${cipher}" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 			done
 		else
-			echo "        - ${TLS_CIPHERS}" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+			echo "        - ${TLS_CIPHERS}" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 		fi
 	fi
 	#### LetsEncrypt Support
- 	print_debug "LetsEncrypt Setup"
- 	if var_true "$ENABLE_LETSENCRYPT" ; then
-     	echo "" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     	mkdir -p "${LETSENCRYPT_STORAGE_PATH}"
-     	touch "${LETSENCRYPT_STORAGE_PATH}""${LETSENCRYPT_STORAGE_FILE}"
-     	chmod 0600 "${LETSENCRYPT_STORAGE_PATH}""${LETSENCRYPT_STORAGE_FILE}"
+	print_debug "LetsEncrypt Setup"
+	if var_true "$ENABLE_LETSENCRYPT"; then
+		echo "" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		mkdir -p "${LETSENCRYPT_STORAGE_PATH}"
+		touch "${LETSENCRYPT_STORAGE_PATH}""${LETSENCRYPT_STORAGE_FILE}"
+		chmod 0600 "${LETSENCRYPT_STORAGE_PATH}""${LETSENCRYPT_STORAGE_FILE}"
 
-        #### Letsnecrypt required information
-        echo "certificatesResolvers:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "  letsencrypt:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo "    acme:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo '      email: "'${LETSENCRYPT_EMAIL}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        echo '      storage: "'${LETSENCRYPT_STORAGE_PATH}${LETSENCRYPT_STORAGE_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Letsnecrypt required information
+		echo "certificatesResolvers:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "  letsencrypt:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo "    acme:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '      email: "'${LETSENCRYPT_EMAIL}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '      storage: "'${LETSENCRYPT_STORAGE_PATH}${LETSENCRYPT_STORAGE_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
-        #### Which LetsEncrypt Server to use
-        if [ "$LETSENCRYPT_SERVER" = "STAGING" ]; then
-            echo '      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        fi
-        #### Keysize
-        echo "      KeyType: ${LETSENCRYPT_KEYTYPE}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        #### LetsEncrypt Challenges
-        case "$LETSENCRYPT_CHALLENGE" in
-	        "TLS")
-	        	echo "      tlsChallenge: {}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        ;;
-	        "HTTP")
-	        	echo "      httpChallenge:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        	echo "        entryPoint: ${HTTP_ENTRYPOINT}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	        ;;
-	        "DNS")
-	        	echo "      dnsChallenge:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### Which LetsEncrypt Server to use
+		if [ "$LETSENCRYPT_SERVER" = "STAGING" ]; then
+			echo '      caServer: "https://acme-staging-v02.api.letsencrypt.org/directory"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
+		#### Keysize
+		echo "      KeyType: ${LETSENCRYPT_KEYTYPE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		#### LetsEncrypt Challenges
+		case "$LETSENCRYPT_CHALLENGE" in
+		"TLS")
+			echo "      tlsChallenge: {}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			;;
+		"HTTP")
+			echo "      httpChallenge:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "        entryPoint: ${HTTP_ENTRYPOINT}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			;;
+		"DNS")
+			echo "      dnsChallenge:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			#### Add DNS Provider (Must use additional Environment Variables, See Traefik Doc
-			    echo '        provider: "'$LETSENCRYPT_DNS_PROVIDER'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		    #### Add DNS Resolvers if provided
-		        if [ -n "$LETSENCRYPT_DNS_RESOLVER" ]; then
-					echo "        resolvers:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '        provider: "'$LETSENCRYPT_DNS_PROVIDER'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			#### Add DNS Resolvers if provided
+			if [ -n "$LETSENCRYPT_DNS_RESOLVER" ]; then
+				echo "        resolvers:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 
-					if [[ "$LETSENCRYPT_DNS_RESOLVER" == *","* ]]; then
-						resolvers=$(echo "$LETSENCRYPT_DNS_RESOLVER" | tr "," "\n")
-			        	for ns in $resolvers
-			            	do
-			    	    	echo "          - \"${ns}\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-						done
-					else
-						echo "          - \"${LETSENCRYPT_DNS_RESOLVER}\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-					fi
-		        fi
-#		    #### Parse Multiple Domains for Wildcard Generation as well as Alternative Domains
-#	            NUM=`printenv | sort | grep '\LETSENCRYPT_DNS_DOMAIN.*' | wc -l`
-#			    for (( i = 1; i <= $NUM; i++ ))
-#   				do
-#				        ACME_DOMAIN=LETSENCRYPT_DNS_DOMAIN${i}_MAIN
-#				        SANS_DOMAIN=LETSENCRYPT_DNS_DOMAIN${i}_SANS
-#
-#				        if [ "${!ACME_DOMAIN}" != "" ] ; then
-#				        	echo "        domains:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-#				        	echo '          - main: "'${!ACME_DOMAIN}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-#				        	sans=$(echo ${!SANS_DOMAIN} | tr "," "\n")
-#                           if [ "${!SANS_DOMAIN}" != "" ] ; then
-#			        			echo "            sans:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-#			        			for domain in $sans
-#			            			do
-#					    			echo "            - \"${domain}\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-#								done
-#                           fi
-#          				fi
-#          			done
-	        ;;
-	        esac
-        echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-    fi
+				if [[ "$LETSENCRYPT_DNS_RESOLVER" == *","* ]]; then
+					resolvers=$(echo "$LETSENCRYPT_DNS_RESOLVER" | tr "," "\n")
+					for ns in $resolvers; do
+						echo "          - \"${ns}\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+					done
+				else
+					echo "          - \"${LETSENCRYPT_DNS_RESOLVER}\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+				fi
+			fi
+			#		    #### Parse Multiple Domains for Wildcard Generation as well as Alternative Domains
+			#	            NUM=`printenv | sort | grep '\LETSENCRYPT_DNS_DOMAIN.*' | wc -l`
+			#			    for (( i = 1; i <= $NUM; i++ ))
+			#   				do
+			#				        ACME_DOMAIN=LETSENCRYPT_DNS_DOMAIN${i}_MAIN
+			#				        SANS_DOMAIN=LETSENCRYPT_DNS_DOMAIN${i}_SANS
+			#
+			#				        if [ "${!ACME_DOMAIN}" != "" ] ; then
+			#				        	echo "        domains:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			#				        	echo '          - main: "'${!ACME_DOMAIN}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			#				        	sans=$(echo ${!SANS_DOMAIN} | tr "," "\n")
+			#                           if [ "${!SANS_DOMAIN}" != "" ] ; then
+			#			        			echo "            sans:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			#			        			for domain in $sans
+			#			            			do
+			#					    			echo "            - \"${domain}\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			#								done
+			#                           fi
+			#          				fi
+			#          			done
+			;;
+		esac
+		echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	fi
 
-     #### API and dashboard
-     print_debug "API Enable"
-     if var_true "$ENABLE_API" ; then
-     	echo "api: {}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	    print_debug "Dashboard Enable"
-	    if var_true "$ENABLE_DASHBOARD" ; then
-	    	sed -i "s#api: {}#api:#g" "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	    	echo "  dashboard: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-            sanity_var DASHBOARD_HOSTNAME "Dashboard Hostname e.g. 'traefik.example.com'"
-			cat <<EOF > "${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
+	#### API and dashboard
+	print_debug "API Enable"
+	if var_true "$ENABLE_API"; then
+		echo "api: {}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		print_debug "Dashboard Enable"
+		if var_true "$ENABLE_DASHBOARD"; then
+			sed -i "s#api: {}#api:#g" "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "  dashboard: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			sanity_var DASHBOARD_HOSTNAME "Dashboard Hostname e.g. 'traefik.example.com'"
+			cat <<EOF >"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
 http:
   routers:
     dashboard:
@@ -392,127 +380,131 @@ http:
       tls:
         certresolver: letsencrypt
 EOF
-			    print_debug "Dashboard Authentication Enable"
-				if var_true "$ENABLE_DASHBOARD_AUTHENTICATION" ; then
-				 	echo "      middlewares:" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
-					cat <<EOF >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
+			print_debug "Dashboard Authentication Enable"
+			if var_true "$ENABLE_DASHBOARD_AUTHENTICATION"; then
+				echo "      middlewares:" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
+				cat <<EOF >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
       - dashboard-auth
   middlewares:
     dashboard-auth:
 EOF
-			 		print_debug "Dashboard Authentication Type"
-			 		case "$DASHBOARD_AUTHENTICATION_TYPE" in
-			        "BASIC")
-	    	           DASHBOARD_ENCRYPTED=$(htpasswd -nb "${DASHBOARD_ADMIN_USER}" "${DASHBOARD_ADMIN_PASS}")
-	        	       cat <<EOF >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
+				print_debug "Dashboard Authentication Type"
+				case "$DASHBOARD_AUTHENTICATION_TYPE" in
+				"BASIC")
+					DASHBOARD_ENCRYPTED=$(htpasswd -nb "${DASHBOARD_ADMIN_USER}" "${DASHBOARD_ADMIN_PASS}")
+					cat <<EOF >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
       basicAuth:
         users:
           - "${DASHBOARD_ENCRYPTED}"
 EOF
-		        		;;
+					;;
 
-		    		esac
-		    		echo "        removeHeader: true" >> "${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
-				fi
+				esac
+				echo "        removeHeader: true" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
 			fi
-	    fi
-        #### DEBUG Mode
-        print_debug "Dashboard Debug Mode"
-	    if var_true DEBUG_MODE ; then
-            echo "  debug: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-            TRAEFIK_LOG_LEVEL=DEBUG
-	    fi
-	 fi
-     echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     #### Traefik Logging
-     print_debug "Traefik Logging"
-     echo "log:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     if [ "$TRAEFIK_LOG_TYPE" = "FILE" ]; then
-        mkdir -p "${TRAEFIK_LOG_PATH}"
-        echo '  filePath: "'${TRAEFIK_LOG_PATH}${TRAEFIK_LOG_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
-        sed -i "s#<TRAEFIK_LOG>#${TRAEFIK_LOG_FILE}#g" /etc/logrotate.d/traefik
-     fi
-     echo '  format: "'${TRAEFIK_LOG_FORMAT}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 #### Log Level
-     echo '  level: "'${TRAEFIK_LOG_LEVEL}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     #### Access Logs
-     print_debug "Access Logs"
-     echo "accessLog:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     if [ $ACCESS_LOG_TYPE = "FILE" ]; then
-        mkdir -p ${TRAEFIK_LOG_PATH}
-        echo '  filePath: "'${TRAEFIK_LOG_PATH}${ACCESS_LOG_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-        sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
-        sed -i "s#<ACCESS_LOG>#${ACCESS_LOG_FILE}#g" /etc/logrotate.d/traefik
-     fi
-     echo '  format: "'${ACCESS_LOG_FORMAT}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     if [ -n "$ACCESS_LOG_BUFFER_SIZE" ]; then
-     	echo '  bufferingSize: '${ACCESS_LOG_BUFFER_SIZE} >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     fi
-     echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-
-     #### Ping Information
-     print_debug "Ping Enable"
-     if var_true $ENABLE_PING ; then
-     	echo "ping: " >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     	if var_true $ENABLE_HTTPS ; then
-     		echo "  entryPoint: \"websecure\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     	else
-     		echo "  entryPoint: \"web\"" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-	 fi
-     echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-
-     #### Providers
-     echo "providers:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-
-	 #### Dynamic Configuration (File)
-	 print_debug "Dynamic File Provider"
-	 echo "  file:" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     echo "    directory: ${TRAEFIK_CONFIG_CUSTOM_PATH}" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     echo "    watch: true" >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-     echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-
-	 #### Docker Provider
-	 print_debug "Docker Provider"
-	 if var_true $ENABLE_DOCKER ; then
-		echo '  docker:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		echo '    endpoint: "'${DOCKER_ENDPOINT}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		echo '    DefaultRule: '${DOCKER_DEFAULT_HOST_RULE} >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		if [ -n "${DOCKER_DEFAULT_NETWORK}" ]; then
-			echo '    network: "'${DOCKER_DEFAULT_NETWORK}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		fi
-		if var_true $DOCKER_EXPOSE_CONTAINERS ; then
-			echo '    exposedByDefault: true' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	fi
+	#### DEBUG Mode
+	print_debug "Dashboard Debug Mode"
+	if var_true DEBUG_MODE; then
+		echo "  debug: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		TRAEFIK_LOG_LEVEL=DEBUG
+	fi
+#fi
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+	#### Traefik Logging
+	print_debug "Traefik Logging"
+	echo "log:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	if [ "$TRAEFIK_LOG_TYPE" = "FILE" ]; then
+		mkdir -p "${TRAEFIK_LOG_PATH}"
+		echo '  filePath: "'${TRAEFIK_LOG_PATH}${TRAEFIK_LOG_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
+		sed -i "s#<TRAEFIK_LOG>#${TRAEFIK_LOG_FILE}#g" /etc/logrotate.d/traefik
+	fi
+	echo '  format: "'${TRAEFIK_LOG_FORMAT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	#### Log Level
+	echo '  level: "'${TRAEFIK_LOG_LEVEL}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	#### Access Logs
+	print_debug "Access Logs"
+	echo "accessLog:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	if [ $ACCESS_LOG_TYPE = "FILE" ]; then
+		mkdir -p ${TRAEFIK_LOG_PATH}
+		echo '  filePath: "'${TRAEFIK_LOG_PATH}${ACCESS_LOG_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
+		sed -i "s#<ACCESS_LOG>#${ACCESS_LOG_FILE}#g" /etc/logrotate.d/traefik
+	fi
+	echo '  format: "'${ACCESS_LOG_FORMAT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	if [ -n "$ACCESS_LOG_BUFFER_SIZE" ]; then
+		echo '  bufferingSize: '${ACCESS_LOG_BUFFER_SIZE} >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	fi
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+	#### Ping Information
+	print_debug "Ping Enable"
+	if var_true $ENABLE_PING; then
+		echo "ping: " >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		if var_true $ENABLE_HTTPS; then
+			echo "  entryPoint: \"websecure\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		else
-			echo '    exposedByDefault: false' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo "  entryPoint: \"web\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		fi
-		echo '    watch: true' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		echo '    constraints: '${DOCKER_CONSTRAINTS} >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		print_debug "Docker Swarm"
-		if var_true $ENABLE_DOCKER_SWARM_MODE ; then
-			echo '    swarmMode: "true"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    swarmModeRefreshSeconds: "'${DOCKER_SWARM_MODE_REFRESH}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		fi
-	    echo '' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		print_debug "Docker TLS"
-		if var_true $ENABLE_DOCKER_TLS ; then
-			echo '  tls:' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    ca: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_CA_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    caOptional: '${DOCKER_TLS_CA_OPTIONAL} >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    cert: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_CERT_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    key: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_KEY_FILE}'"' >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			echo '    insecureSkipVerify: '${DOCKER_TLS_INSECURESKIPVERIFY} >> "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		fi
-	 fi
+	fi
 
-    ### Copy Dynamic Configuration to Custom Location
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+	#### Providers
+	echo "providers:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+	#### Dynamic Configuration (File)
+	print_debug "Dynamic File Provider"
+	echo "  file:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo "    directory: ${TRAEFIK_CONFIG_CUSTOM_PATH}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo "    watch: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+	echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+
+	#### Docker Provider
+	print_debug "Docker Provider"
+	if var_true $ENABLE_DOCKER; then
+		echo '  docker:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '    endpoint: "'${DOCKER_ENDPOINT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '    DefaultRule: '${DOCKER_DEFAULT_HOST_RULE} >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		if [ -n "${DOCKER_DEFAULT_NETWORK}" ]; then
+			echo '    network: "'${DOCKER_DEFAULT_NETWORK}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
+		if var_true $DOCKER_EXPOSE_CONTAINERS; then
+			echo '    exposedByDefault: true' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		else
+			echo '    exposedByDefault: false' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
+		echo '    watch: true' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		echo '    constraints: '${DOCKER_CONSTRAINTS} >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		print_debug "Docker Swarm"
+		if var_true $ENABLE_DOCKER_SWARM_MODE; then
+			echo '    swarmMode: "true"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    swarmModeRefreshSeconds: "'${DOCKER_SWARM_MODE_REFRESH}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
+		echo '' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		print_debug "Docker TLS"
+		if var_true $ENABLE_DOCKER_TLS; then
+			echo '  tls:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    ca: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_CA_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    caOptional: '${DOCKER_TLS_CA_OPTIONAL} >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    cert: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_CERT_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    key: "'${DOCKER_TLS_CERT_PATH}${DOCKER_TLS_KEY_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+			echo '    insecureSkipVerify: '${DOCKER_TLS_INSECURESKIPVERIFY} >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+		fi
+	fi
+
+	### Copy Dynamic Configuration to Custom Location
 	cp -R /assets/traefik/dynamic/* "${TRAEFIK_CONFIG_CUSTOM_PATH}"
 else
-	 print_warn "Manual Configuration Mode Activated"
-	 if [ ! -f "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}" ]; then
-	    print_notice "Traefik Configuration File found - Using.."
-     fi
+	print_warn "Manual Configuration Mode Activated"
+	rm -rf /etc/logrotate.d/traefik
+	if [ ! -f "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}" ]; then
+		print_notice "Traefik Configuration File found - Using.."
+	fi
 fi
 
 liftoff

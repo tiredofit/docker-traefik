@@ -66,7 +66,7 @@ The following image tags are available:
 
 * `latest` - Traefik 2.2.x Branch w/Alpine Linux
 * `1.7-latest` - Traefik 1.7.x Branch w/Alpine Linux
-* `2.0-latest` - Traefik 2.2 w/Alpine Linux
+* `2.2-latest` - Traefik 2.2 w/Alpine Linux
 
 ### Quick Start
 
@@ -77,7 +77,13 @@ The following image tags are available:
 
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 
-Once run, visit the newly created DNS entry and you should see the Traefik Dashboard
+_This image in it's auto configured state allows for using less labels than usual. This is what I use in my produciton environments, and if I need to add more configuration options I do, but if you are simply using as an HTTP/HTTPS reverse proxy you can get by with the bare minimum on your proxied containers as such:
+
+````bash
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.example.com`) || Host(`whoami2.example.com`)
+      - traefik.http.services.whoami.loadbalancer.server.port=80
+````
 
 ## Configuration
 
@@ -99,7 +105,7 @@ Along with the Environment Variables from the [Base image](https://hub.docker.co
 
 There are a huge amount of configuration variables and it is recommended that you get comfortable for a few hours with the [Traefik Documentation](https://docs.traefik.io)
 
-You will eventually based on your usage case switch over to `SETUP_TYPE=MANUAL` and edit your own `config.toml`. While I've tried to make this as easy to use as possible, once in production you'll find much better success with large implementations with this approach.
+You will eventually based on your usage case switch over to `SETUP_TYPE=MANUAL` and edit your own `config.yml`. While I've tried to make this as easy to use as possible, once in production you'll find much better success with large implementations with this approach.
 
 By Default this image is ready to run out of the box, without having to alter any of the settings with the exception of the `docker-compose.yml` hostname/domainname variables/labels.
 

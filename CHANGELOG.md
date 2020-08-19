@@ -1,3 +1,9 @@
+## 1.0.15 2020-08-19 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix for SETUP_TYPE=MANUAL not actually skipping writing parts of configuration file
+
+
 ## 1.0.14 2020-07-30 <dave at tiredofit dot ca>
 
    ### Added
