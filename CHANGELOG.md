@@ -1,3 +1,9 @@
+## 1.0.17 2020-08-30 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Bugfix to 1.0.16
+
+
 ## 1.0.16 2020-08-29 <dave at tiredofit dot ca>
 
    ### Added
