@@ -212,11 +212,13 @@ By Default this image is ready to run out of the box, without having to alter an
 
 #### Certificate Dumper Settings
 
-| Parameter                      | Description                                                                                                                                                       | Default                            |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| `ENABLE_CERTIFICATE_DUMPER`    | Enable Dumping of Certificates from acme.json                                                                                                                     | `TRUE`                             |
-| `CERTIFICATE_DUMPER_PATH`      | Where to put the dumped certificates                                                                                                                              | `${LETSENCRYPT_STORAGE_PATH}/dump` |
-| `CERTIFICATE_DUMPER_POST_HOOK` | *optional* Argument or external script to execute post dumping of certificates Where to put the dumped certificates - e.g. `chmod 644 ${CERTIFICATE_DUMPER_PATH}` |
+| Parameter                         | Description                                                                                                                                                       | Default                            |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `ENABLE_CERTIFICATE_DUMPER`       | Enable Dumping of Certificates from acme.json                                                                                                                     | `TRUE`                             |
+| `CERTIFICATE_DUMPER_PATH`         | Where to put the dumped certificates                                                                                                                              | `${LETSENCRYPT_STORAGE_PATH}/dump` |
+| `CERTIFICATE_DUMPER_POST_HOOK`    | *optional* Argument or external script to execute post dumping of certificates Where to put the dumped certificates - e.g. `chmod 644 ${CERTIFICATE_DUMPER_PATH}` |
+| `CERTIFICATE_DUMP_SUBDIRECTORIES` | Create subdirectories of hosts                                                                                                                                    | `TRUE`                             |
+| `CLEAN_DUMP_PATH`                 | Clean Dump path before redumping                                                                                                                                  | `FALSE`                            |
 
 ### Networking
 

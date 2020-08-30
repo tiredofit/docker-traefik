@@ -1,3 +1,9 @@
+## 1.0.16 2020-08-29 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add more features for Traefik Certificate Dumping
+
+
 ## 1.0.15 2020-08-19 <dave at tiredofit dot ca>
 
    ### Changed

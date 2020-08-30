@@ -16,11 +16,11 @@ fi
 print_info "Starting Traefik Certificate Dumper ${TRAEFIK_CERT_DUMPER_VERSION}"
 exec traefik-certs-dumper file --source ${LETSENCRYPT_STORAGE_PATH}${LETSENCRYPT_STORAGE_FILE} \
                                --dest ${CERTIFICATE_DUMP_PATH} \
-                               --domain-subdir=true \
+                               --domain-subdir=${CERTIFICATE_DUMP_SUBDIRECTORIES} \
                                --crt-name cert \
                                --crt-ext .pem \
                                --key-name key \
                                --key-ext .pem \
                                --version v2 \
-                               --clean \
+                               --clean=${CLEAN_DUMP_PATH} \
                                ${posthook} --watch
