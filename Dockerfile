@@ -15,15 +15,25 @@ RUN set -x && \
             apache2-utils \
             && \
     \
-    curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_v${TRAEFIK_VERSION}_linux_amd64.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
+## Multi Arch Support
+    apkArch="$(apk --print-arch)"; \
+	case "$apkArch" in \
+		x86_64) Arch='amd64' ;; \
+		armv7) Arch='armv7' ;; \
+                armhf) Arch='armv6' ;; \
+		aarch64) Arch='arm64' ;; \
+		*) Arch='386' ;; \
+	esac; \
+
+    curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_v${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
     chmod +x /usr/local/bin/traefik && \
     \
 ### Download Certificate Dumper
-    curl -sSL https://github.com/ldez/traefik-certs-dumper/releases/download/v${TRAEFIK_CERT_DUMPER_VERSION}/traefik-certs-dumper_v${TRAEFIK_CERT_DUMPER_VERSION}_linux_386.tar.gz | tar xvfz - -C /usr/local/bin traefik-certs-dumper && \
+    curl -sSL https://github.com/ldez/traefik-certs-dumper/releases/download/v${TRAEFIK_CERT_DUMPER_VERSION}/traefik-certs-dumper_v${TRAEFIK_CERT_DUMPER_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik-certs-dumper && \
     chmod +x /usr/local/bin/traefik-certs-dumper && \
     \
 ### Download Traefik Migration Tool
-    curl -sSL https://github.com/containous/traefik-migration-tool/releases/download/v${TRAEFIK_MIGRATION_TOOL_VERSION}/traefik-migration-tool_v${TRAEFIK_MIGRATION_TOOL_VERSION}_linux_386.tar.gz | tar xvfz - -C /usr/local/bin traefik-migration-tool && \
+    curl -sSL https://github.com/containous/traefik-migration-tool/releases/download/v${TRAEFIK_MIGRATION_TOOL_VERSION}/traefik-migration-tool_v${TRAEFIK_MIGRATION_TOOL_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik-migration-tool && \
     chmod +x /usr/local/bin/traefik-migration-tool && \
     \
 ### Cleanup
