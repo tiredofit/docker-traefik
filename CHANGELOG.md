@@ -1,3 +1,8 @@
+## 1.2.0 2021-01-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.4 Branch (Presently 2.4.0)
+
 ## 1.1.5 2021-01-25 <dave at tiredofit dot ca>
 
    ### Added
