@@ -1,3 +1,12 @@
+## 1.1.5 2021-01-25 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.3.7
+      - Traefik Migration Tool 0.13.1
+      - Traefik Certs Dumper 2.7.4
+      - Arm64, ArmV6, ArmV7 build variants added
+
+
 ## 1.1.4 2021-01-05 <dave at tiredofit dot ca>
 
    ### Added
