@@ -1,8 +1,8 @@
-FROM tiredofit/alpine:3.12
+FROM tiredofit/alpine:3.13
 LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=2.3.7 \
+ENV TRAEFIK_VERSION=2.4.8 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.1 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
     ENABLE_SMTP=FALSE
@@ -24,7 +24,7 @@ RUN set -x && \
 		aarch64) Arch='arm64' ;; \
 		*) Arch='386' ;; \
 	esac; \
-
+    \
     curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_v${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
     chmod +x /usr/local/bin/traefik && \
     \
