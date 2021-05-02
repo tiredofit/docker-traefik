@@ -1,14 +1,16 @@
-# hub.docker.com/r/tiredofit/traefik
+# github.com/tiredofit/docker-traefik
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/traefik.svg)](https://hub.docker.com/r/tiredofit/traefik)
-[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/traefik.svg)](https://hub.docker.com/r/tiredofit/traefik)
-[![Docker Layers](https://images.microbadger.com/badges/image/tiredofit/traefik.svg)](https://microbadger.com/images/tiredofit/traefik)
+[![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-traefik?style=flat-square)](https://github.com/tiredofit/docker-traefik/releases/latest)
+[![Build Status](https://img.shields.io/github/workflow/status/tiredofit/docker-traefik/build?style=flat-square)](https://github.com/tiredofit/docker-traefik/actions?query=workflow%3Abuild)
+[![Docker Stars](https://img.shields.io/docker/stars/tiredofit/traefik.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/traefik/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/traefik.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/traefik/)
+[![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
+[![Paypal Donate](https://img.shields.io/badge/donate-paypal-00457c.svg?logo=paypal&style=flat-square)](https://www.paypal.me/tiredofit)
 
-## Introduction
+* * *
+## About
 
-This will build an image for [Traefik](https://traefik.io/) a modernized proxy built in go built for containerized service deployment.
-
-* This Container uses a [customized Alpine Linux base](https://hub.docker.com/r/tiredofit/alpine) which includes [s6 overlay](https://github.com/just-containers/s6-overlay) enabled for PID 1 Init capabilities, [zabbix-agent](https://zabbix.org) for individual container monitoring, Cron also installed along with other tools (bash,curl, less, logrotate, nano, vim) for easier management. It also supports sending to external SMTP servers..
+This will build an image for [Traefik](https://traefik.io/) a modernized proxy built in GO built for containerized service deployment.
 
 * Sane Defaults to have a working solution by just running the image
 * Automatically generates configuration files on startup, or option to use your own
@@ -17,23 +19,25 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 
 *This is an incredibly complex piece of software that will tries to get you up and running with sane defaults, you will need to switch eventually over to manually configuring the configuration file when depending on your usage case*
 
-[Changelog](CHANGELOG.md)
-
-## Authors
+## Maintainer
 
 - [Dave Conroy](https://github.com/tiredofit)
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-- [Authors](#authors)
+- [About](#about)
+- [Maintainer](#maintainer)
 - [Table of Contents](#table-of-contents)
-- [Prerequisites](#prerequisites)
+- [Prerequisites and Assumptions](#prerequisites-and-assumptions)
 - [Installation](#installation)
-  - [Quick Start](#quick-start)
+  - [Build from Source](#build-from-source)
+  - [Prebuilt Images](#prebuilt-images)
+    - [Multi Archictecture](#multi-archictecture)
 - [Configuration](#configuration)
+  - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
   - [Environment Variables](#environment-variables)
+    - [Base Images used](#base-images-used)
     - [General Settings](#general-settings)
     - [Logging Settings](#logging-settings)
     - [Docker Settings](#docker-settings)
@@ -44,36 +48,54 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
   - [Networking](#networking)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
+- [Contributions](#contributions)
+- [Support](#support)
+  - [Usage](#usage)
+  - [Bugfixes](#bugfixes)
+  - [Feature Requests](#feature-requests)
+  - [Updates](#updates)
+- [License](#license)
 - [References](#references)
 
-## Prerequisites
+## Prerequisites and Assumptions
 
-You must have access to create records on your DNS server to be able to fully use this image. While it will work locally, things like certificate issuing via LetsEncrypt will fail without proper resolving DNS.
+* Assumes you have access to create records on your DNS server to be able to fully use this image. While it will work locally, features such as certificate issuance via  LetsEncrypt will fail without proper resolving DNS.
+
 
 
 ## Installation
 
-Automated builds of the image are available on [Docker Hub](https://hub.docker.com/tiredofit/traefik) and is the
-recommended method of installation.
+### Build from Source
+Clone this repository and build the image with `docker build <arguments> (imagename) .`
 
+### Prebuilt Images
+Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/traefik) and is the recommended method of installation.
 
 ```bash
-docker pull tiredofit/traefik:<tag>
+docker pull tiredofit/traefik:(imagetag)
 ```
 
-The following image tags are available:
+The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
 
-* `latest` - Traefik 2.2.x Branch w/Alpine Linux
-* `1.7-latest` - Traefik 1.7.x Branch w/Alpine Linux
-* `2.2-latest` - Traefik 2.2 w/Alpine Linux
+
+| Traefik Version | OS Base | Tag           |
+| --------------- | ------- | ------------- |
+| latest          | Alpine  | `:latest`     |
+| 2.4.x           | Alpine  | `:2.4-latest` |
+| 2.3.x           | Alpine  | `:2.3-latest` |
+| 2.2.x           | Alpine  | `:2.2-latest` |
+| 1.7.x           | Alpine  | `:1.7-latest` |
+
+#### Multi Archictecture
+Images are built primarily for `amd64` architecture, and may also include builds for `arm/v6`, `arm/v7`, `arm64` and others. These variants are all unsupported. Consider [sponsoring](https://github.com/sponsors/tiredofit) my work so that I can work with various hardware. To see if this image supports multiple architecures, type `docker manifest (image):(tag)`
+
+## Configuration
 
 ### Quick Start
 
 * The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/). See the examples folder for a working [docker-compose.yml](examples/docker-compose.yml) that can be modified for development or production use.
 
-
-* Set various [environment variables](#environment-variables) to understand the capabilities of this image. A Sample `docker-compose.yml` is provided that will work right out of the box for most people without any fancy optimizations.
-
+* Set various [environment variables](#environment-variables) to understand the capabilities of this image.
 * Map [persistent storage](#data-volumes) for access to configuration and data files for backup.
 
 _This image in it's auto configured state allows for using less labels than usual. This is what I use in my produciton environments, and if I need to add more configuration options I do, but if you are simply using as an HTTP/HTTPS reverse proxy you can get by with the bare minimum on your proxied containers as such:
@@ -83,8 +105,6 @@ _This image in it's auto configured state allows for using less labels than usua
       - traefik.http.routers.whoami.rule=Host(`whoami.example.com`) || Host(`whoami2.example.com`)
       - traefik.http.services.whoami.loadbalancer.server.port=80
 ````
-
-## Configuration
 
 ### Persistent Storage
 
@@ -100,7 +120,14 @@ The following directories/files should be mapped for persistent storage in order
 
 ### Environment Variables
 
-Along with the Environment Variables from the [Base image](https://hub.docker.com/r/tiredofit/alpine),  below is the complete list of available options that can be used to customize your installation.
+#### Base Images used
+
+This image relies on an [Alpine Linux](https://hub.docker.com/r/tiredofit/alpine) or [Debian Linux](https://hub.docker.com/r/tiredofit/debian) base image that relies on an [init system](https://github.com/just-containers/s6-overlay) for added capabilities. Outgoing SMTP capabilities are handlded via `msmtp`. Individual container performance monitoring is performed by [zabbix-agent](https://zabbix.org). Additional tools include: `bash`,`curl`,`less`,`logrotate`, `nano`,`vim`.
+Be sure to view the following repositories to understand all the customizable options:
+
+| Image                                                  | Description                            |
+| ------------------------------------------------------ | -------------------------------------- |
+| [OS Base](https://github.com/tiredofit/docker-alpine/) | Customized Image based on Alpine Linux |
 
 There are a huge amount of configuration variables and it is recommended that you get comfortable for a few hours with the [Traefik Documentation](https://docs.traefik.io)
 
@@ -109,12 +136,12 @@ You will eventually based on your usage case switch over to `SETUP_TYPE=MANUAL` 
 By Default this image is ready to run out of the box, without having to alter any of the settings with the exception of the `docker-compose.yml` hostname/domainname variables/labels.
 
 #### General Settings
-| Parameter              | Description                                                                                                                                | Default       |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------- |
-| `SETUP_TYPE`           | Default: `AUTO` to auto generate config.toml on bootup, otherwise let admin control configuration. Set to `MANUAL` to stop auto generating |
-| `CONFIG_FILE`          | Configuration file to load                                                                                                                 | `config.toml` |
-| `CHECK_NEW_VERSION`    | Check for new Traefik Release                                                                                                              | `FALSE`       |
-| `SEND_ANONYMOUS_USAGE` | Send Anonymous Usage Stats                                                                                                                 | `FALSE`       |
+| Parameter              | Description                                                                                    | Default       |
+| ---------------------- | ---------------------------------------------------------------------------------------------- | ------------- |
+| `SETUP_TYPE`           | `AUTO` to auto generate config on bootup, Otherwise `MANUAL` lets admin control configuration. | `AUTO`        |
+| `CONFIG_FILE`          | Configuration file to load                                                                     | `config.toml` |
+| `CHECK_NEW_VERSION`    | Check for new Traefik Release                                                                  | `FALSE`       |
+| `SEND_ANONYMOUS_USAGE` | Send Anonymous Usage Stats                                                                     | `FALSE`       |
 
 #### Logging Settings
 | Parameter                    | Description                                                     | Default                     |
@@ -229,13 +256,37 @@ The following ports are exposed.
 | `443` | HTTPS       |
 
 ## Maintenance
-### Shell Access
+Inside the image are tools to perform modification on how the image runs.
 
+### Shell Access
 For debugging and maintenance purposes you may want access the containers shell.
 
 ```bash
 docker exec -it (whatever your container name is e.g. traefik) bash
 ```
+* * *
+## Contributions
+Welcomed. Please fork the repository and submit a [pull request](../../pulls) for any bug fixes, features or additions you propose to be included in the image. If it does not impact my intended usage case, it will be merged into the tree, tagged as a release and credit to the contributor in the [CHANGELOG](CHANGELOG).
+
+## Support
+
+These images were built to serve a specific need in a production environment and gradually have had more functionality added based on requests from the community.
+### Usage
+- The [Discussions board](../../discussions) is a great place for working with the community on tips and tricks of using this image.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) personalized support.
+### Bugfixes
+- Please, submit a [Bug Report](issues/new) if something isn't working as expected. I'll do my best to issue a fix in short order.
+
+### Feature Requests
+- Feel free to submit a feature request, however there is no guarantee that it will be added, or at what timeline.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) regarding development of features.
+
+### Updates
+- Best effort to track upstream changes, More priority if I am actively using the image in a production environment.
+- Consider [sponsoring me](https://github.com/sponsors/tiredofit) for up to date releases.
+
+## License
+MIT. See [LICENSE](LICENSE) for more details.
 
 ## References
 
