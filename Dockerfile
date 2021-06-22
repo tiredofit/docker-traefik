@@ -1,9 +1,9 @@
-FROM tiredofit/alpine:3.13
-LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
+FROM tiredofit/alpine:3.14
+LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=2.4.8 \
-    TRAEFIK_MIGRATION_TOOL_VERSION=0.13.1 \
+ENV TRAEFIK_VERSION=2.4.9 \
+    TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
     ENABLE_SMTP=FALSE
 

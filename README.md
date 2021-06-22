@@ -66,7 +66,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 ## Installation
 
 ### Build from Source
-Clone this repository and build the image with `docker build <arguments> (imagename) .`
+Clone this repository and build the image with `docker build -t (imagename) .`
 
 ### Prebuilt Images
 Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tiredofit/traefik) and is the recommended method of installation.
@@ -75,7 +75,7 @@ Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tired
 docker pull tiredofit/traefik:(imagetag)
 ```
 
-The following image tags are available along with their taged release based on what's written in the [Changelog](CHANGELOG.md):
+The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
 
 | Traefik Version | OS Base | Tag           |

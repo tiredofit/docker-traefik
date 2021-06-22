@@ -1,3 +1,10 @@
+## 1.2.2 2021-06-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.4.9
+      - Alpine 3.14 base
+
+
 ## 1.2.1 2021-04-12 <dave at tiredofit dot ca>
 
    ### Added
