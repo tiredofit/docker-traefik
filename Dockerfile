@@ -5,7 +5,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ENV TRAEFIK_VERSION=2.4.9 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
-    ENABLE_SMTP=FALSE
+    CONTAINER_ENABLE_MESSAGING=FALSE
 
 ### Download Traefik
 RUN set -x && \
