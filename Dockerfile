@@ -2,7 +2,7 @@ FROM tiredofit/alpine:3.14
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=2.4.11 \
+ENV TRAEFIK_VERSION=2.4.12 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
     CONTAINER_ENABLE_MESSAGING=FALSE
