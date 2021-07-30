@@ -1,3 +1,9 @@
+## 1.2.6 2021-07-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.4.13
+
+
 ## 1.2.5 2021-07-26 <dave at tiredofit dot ca>
 
    ### Added
