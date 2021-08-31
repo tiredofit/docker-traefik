@@ -1,3 +1,12 @@
+## 1.3.2 2021-08-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add fluent-bit log parsing capability
+
+   ### Changed
+      - Switch logs from common format to JSON
+
+
 ## 1.3.1 2021-08-20 <dave at tiredofit dot ca>
 
    ### Added

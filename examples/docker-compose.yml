@@ -5,7 +5,7 @@ services:
     image: tiredofit/traefik:2.2-latest
     container_name: traefik-app
     environment:
-      - ZABBIX_HOSTNAME=traefik-app
+      - CONTAINER_NAME=traefik-app
 
       - LETSENCRYPT_EMAIL=dnsadmin@example.com
       - LETSENCRYPT_CHALLENGE=DNS
