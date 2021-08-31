@@ -1,3 +1,4 @@
+# logship: traefik
 <TRAEFIK_LOG_PATH>/<TRAEFIK_LOG> <TRAEFIK_LOG_PATH>/<ACCESS_LOG>{
     daily
     ifempty

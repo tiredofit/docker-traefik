@@ -1,3 +1,9 @@
+## 1.1.6 2021-08-31 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add fluent-bit logging
+
+
 ## 1.1.5 2021-01-25 <dave at tiredofit dot ca>
 
    ### Added
