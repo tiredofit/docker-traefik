@@ -4,7 +4,7 @@ source /assets/functions/00-container
 prepare_service
 PROCESS_NAME="traefik"
 
-if var_true "$ENABLE_ZABBIX"; then
+if var_true "${CONTAINER_ENABLE_MONITORING}"; then
 	echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >>/assets/cron/crontab.txt
 fi
 
@@ -74,7 +74,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		fi
 		#### HTTP Forwarded Headers Protocol
 		print_debug "HTTP Forwarded Headers"
-		if var_true "$ENABLE_HTTP_FORWARDED_HEADERS"; then
+		if var_true "${ENABLE_HTTP_FORWARDED_HEADERS}"; then
 			echo '    forwardedHeaders:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			if [[ "$TRUSTED_IPS" == *","* ]]; then
@@ -86,9 +86,9 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 				echo "       - ${TRUSTED_IPS}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
 		fi
-		if var_true "$ENABLE_HTTPS"; then
+		if var_true "${ENABLE_HTTPS}"; then
 			#### HTTPS Upgrade
-			print_debug "HTTPS Upgrade"
+			print_debug "{HTTPS Upgrade}"
 			if var_true "$ENABLE_HTTPS_UPGRADE"; then
 				skiphttp="TRUE"
 				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
@@ -106,7 +106,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		fi
 
 		#### HTTP Compression
-		if var_true "$ENABLE_COMPRESSION_HTTP"; then
+		if var_true "${ENABLE_COMPRESSION_HTTP}"; then
 			print_debug "HTTP Compression"
 			if [ "$skiphttp" != "TRUE" ]; then
 				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
@@ -153,7 +153,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 
 	#### HTTPS Support
 	print_debug "HTTPS Enable"
-	if var_true "$ENABLE_HTTPS"; then
+	if var_true "${ENABLE_HTTPS}"; then
 		echo "  ${HTTPS_ENTRYPOINT}:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		echo '    address: "'${HTTPS_LISTEN_IP}':'${HTTPS_LISTEN_PORT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		#### Transport Timeouts
@@ -168,11 +168,11 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		echo "         graceTimeout: ${HTTPS_TIMEOUT_GRACE}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		#### HTTP Proxy Protocol
 		print_debug "HTTPS Proxy Protocol"
-		if var_true "$ENABLE_HTTPS_PROXY_PROTOCOL"; then
+		if var_true "${ENABLE_HTTPS_PROXY_PROTOCOL}"; then
 			echo '    proxyProtocol:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			if [[ "$TRUSTED_IPS" == *","* ]]; then
-				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
+			if [[ "${TRUSTED_IPS}" == *","* ]]; then
+				ips=$(echo "${TRUSTED_IPS}" | tr "," "\n")
 				for ip in $ips; do
 					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 				done
@@ -182,10 +182,10 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		fi
 		#### HTTP Forwarded Headers Protocol
 		print_debug "HTTPS Forwarded Headers"
-		if var_true "$ENABLE_HTTPS_FORWARDED_HEADERS"; then
+		if var_true "${ENABLE_HTTPS_FORWARDED_HEADERS}"; then
 			echo '    forwardedHeaders:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			echo "       trustedIPs:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-			if [[ "$TRUSTED_IPS" == *","* ]]; then
+			if [[ "${TRUSTED_IPS}" == *","* ]]; then
 				ips=$(echo "$TRUSTED_IPS" | tr "," "\n")
 				for ip in $ips; do
 					echo "       - ${ip}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
@@ -195,7 +195,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 			fi
 		fi
 		print_debug "HTTPS Entrypoint: LetsEncrypt"
-		if var_true "$ENABLE_LETSENCRYPT"; then
+		if var_true "${ENABLE_LETSENCRYPT}"; then
 			skiphttps="TRUE"
 			echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			echo "      tls:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
@@ -205,7 +205,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 
 		#### HTTPS Compression
 		print_debug "HTTPS Compression"
-		if var_true "$ENABLE_COMPRESSION_HTTPS"; then
+		if var_true "${ENABLE_COMPRESSION_HTTPS}"; then
 			if [ "$skiphttps" != "TRUE" ]; then
 				echo "    http:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			fi
@@ -254,13 +254,13 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	echo '  options:' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	echo '    default:' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	#### TLS Minimum Version
-	echo '      MinVersion: "'$TLS_MINIMUM_VERSION'"' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
+	echo '      MinVersion: "'${TLS_MINIMUM_VERSION}'"' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	#### SNI Strict Checking
-	if var_true "$ENABLE_HTTPS_SNI_STRICT"; then
+	if var_true "${ENABLE_HTTPS_SNI_STRICT}"; then
 		echo '      sniStrict: true' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	fi
 	#### Prefer Server Ciphers
-	if var_true "$TLS_PREFER_SERVER_CIPHERS"; then
+	if var_true "${TLS_PREFER_SERVER_CIPHERS}"; then
 		echo '      preferServerCipherSuites: true' >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/tls.yml
 	fi
 	#### Curve Prferences
@@ -290,7 +290,7 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 	fi
 	#### LetsEncrypt Support
 	print_debug "LetsEncrypt Setup"
-	if var_true "$ENABLE_LETSENCRYPT"; then
+	if var_true "${ENABLE_LETSENCRYPT}"; then
 		echo "" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		mkdir -p "${LETSENCRYPT_STORAGE_PATH}"
 		touch "${LETSENCRYPT_STORAGE_PATH}""${LETSENCRYPT_STORAGE_FILE}"
@@ -362,10 +362,10 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 
 	#### API and dashboard
 	print_debug "API Enable"
-	if var_true "$ENABLE_API"; then
+	if var_true "${ENABLE_API}"; then
 		echo "api: {}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		print_debug "Dashboard Enable"
-		if var_true "$ENABLE_DASHBOARD"; then
+		if var_true "${ENABLE_DASHBOARD}"; then
 			sed -i "s#api: {}#api:#g" "${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			echo "  dashboard: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 			sanity_var DASHBOARD_HOSTNAME "Dashboard Hostname e.g. 'traefik.example.com'"
@@ -381,7 +381,7 @@ http:
         certresolver: letsencrypt
 EOF
 			print_debug "Dashboard Authentication Enable"
-			if var_true "$ENABLE_DASHBOARD_AUTHENTICATION"; then
+			if var_true "${ENABLE_DASHBOARD_AUTHENTICATION}"; then
 				echo "      middlewares:" >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
 				cat <<EOF >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
       - dashboard-auth
@@ -389,7 +389,7 @@ EOF
     dashboard-auth:
 EOF
 				print_debug "Dashboard Authentication Type"
-				case "$DASHBOARD_AUTHENTICATION_TYPE" in
+				case "${DASHBOARD_AUTHENTICATION_TYPE}" in
 				"BASIC")
 					DASHBOARD_ENCRYPTED=$(htpasswd -nb "${DASHBOARD_ADMIN_USER}" "${DASHBOARD_ADMIN_PASS}")
 					cat <<EOF >>"${TRAEFIK_CONFIG_CUSTOM_PATH}"/dashboard.yml
@@ -406,7 +406,7 @@ EOF
 	fi
 	#### DEBUG Mode
 	print_debug "Dashboard Debug Mode"
-	if var_true DEBUG_MODE; then
+	if var_true "${DEBUG_MODE}" ; then
 		echo "  debug: true" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		TRAEFIK_LOG_LEVEL=DEBUG
 	fi
@@ -443,9 +443,9 @@ EOF
 
 	#### Ping Information
 	print_debug "Ping Enable"
-	if var_true $ENABLE_PING; then
+	if var_true ${ENABLE_PING}; then
 		echo "ping: " >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		if var_true $ENABLE_HTTPS; then
+		if var_true ${ENABLE_HTTPS}; then
 			echo "  entryPoint: \"websecure\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 		else
 			echo "  entryPoint: \"web\"" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
