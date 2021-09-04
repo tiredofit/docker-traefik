@@ -418,9 +418,10 @@ EOF
 	echo "log:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 	if [ "$TRAEFIK_LOG_TYPE" = "FILE" ]; then
 		mkdir -p "${TRAEFIK_LOG_PATH}"
+		touch ${TRAEFIK_LOG_PATH}/${TRAEFIK_LOG_FILE}
 		echo '  filePath: "'${TRAEFIK_LOG_PATH}${TRAEFIK_LOG_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
-		sed -i "s#<TRAEFIK_LOG>#${TRAEFIK_LOG_FILE}#g" /etc/logrotate.d/traefik
+		if [ ${TRAEFIK_LOG_FORMAT,,} = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi ;
+		create_logrotate traefik ${TRAEFIK_LOG_PATH}/${TRAEFIK_LOG_FILE} traefik-${tlogfmt}
 	fi
 	echo '  format: "'${TRAEFIK_LOG_FORMAT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 	#### Log Level
@@ -432,8 +433,8 @@ EOF
 	if [ $ACCESS_LOG_TYPE = "FILE" ]; then
 		mkdir -p ${TRAEFIK_LOG_PATH}
 		echo '  filePath: "'${TRAEFIK_LOG_PATH}${ACCESS_LOG_FILE}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
-		sed -i "s#<TRAEFIK_LOG_PATH>#${TRAEFIK_LOG_PATH}#g" /etc/logrotate.d/traefik
-		sed -i "s#<ACCESS_LOG>#${ACCESS_LOG_FILE}#g" /etc/logrotate.d/traefik
+		if [ ${TRAEFIK_LOG_FORMAT,,} = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi ;
+		create_logrotate traefik-access ${TRAEFIK_LOG_PATH}/${ACCESS_LOG_FILE} traefik-access-${tlogfmt}
 	fi
 	echo '  format: "'${ACCESS_LOG_FORMAT}'"' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 	if [ -n "$ACCESS_LOG_BUFFER_SIZE" ]; then
