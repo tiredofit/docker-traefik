@@ -1,3 +1,9 @@
+## 1.3.4 2021-09-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change the way logrotate is configured for better parsing capabilities
+
+
 ## 1.3.3 2021-09-02 <dave at tiredofit dot ca>
 
    ### Added
