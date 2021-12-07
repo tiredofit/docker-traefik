@@ -4,8 +4,15 @@ source /assets/functions/00-container
 prepare_service
 PROCESS_NAME="traefik"
 
-if var_true "${CONTAINER_ENABLE_MONITORING}"; then
-	echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >>/assets/cron/crontab.txt
+if var_true "${CONTAINER_ENABLE_MONITORING}" && [ "${CONTAINER_MONITORING_BACKEND,,}" = "zabbix" ]; then
+        source /assets/defaults/03-monitoring
+        cat <<EOF > "${ZABBIX_CONFIG_PATH}"/"${ZABBIX_CONFIG_FILE}.d"/tiredofit_traefik.conf
+# Zabbix traefik Configuration - Automatically Generated
+# Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-traefik
+# Autoregister=traefik
+EOF
+
+echo "* * * * * /etc/zabbix/zabbix_agentd.conf.d/scripts/traefik.sh > /dev/null 2&>1" >>/assets/cron/crontab.txt
 fi
 
 mkdir -p "${TRAEFIK_CONFIG_PATH}"
