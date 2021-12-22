@@ -2,7 +2,7 @@ FROM docker.io/tiredofit/alpine:3.15
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=2.5.5 \
+ENV TRAEFIK_VERSION=2.5.6 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
     CONTAINER_ENABLE_MESSAGING=FALSE
@@ -20,7 +20,7 @@ RUN set -x && \
 	case "$apkArch" in \
 		x86_64) Arch='amd64' ;; \
 		armv7) Arch='armv7' ;; \
-                armhf) Arch='armv6' ;; \
+        armhf) Arch='armv6' ;; \
 		aarch64) Arch='arm64' ;; \
 		*) Arch='386' ;; \
 	esac; \
