@@ -1,3 +1,9 @@
+## 1.1.12 2022-02-09 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Rework to support new base image
+
+
 ## 1.1.11 2022-02-09 <dave at tiredofit dot ca>
 
    ### Changed
