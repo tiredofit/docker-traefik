@@ -5,7 +5,9 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ENV TRAEFIK_VERSION=2.5.7 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
-    CONTAINER_ENABLE_MESSAGING=FALSE
+    CONTAINER_ENABLE_MESSAGING=FALSE \
+    IMAGE_NAME="tiredofit/traefik" \
+    IMAGE_REPO_URL="https://github.com/tiredofit/docker-traefik/"
 
 ### Download Traefik
 RUN set -x && \
