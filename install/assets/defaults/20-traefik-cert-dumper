@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv bash
+#!/command/with-contenv bash
 
 ### Set Defaults
 ENABLE_CERTIFICATE_DUMPER=${ENABLE_CERTIFICATE_DUMPER:-"TRUE"}
