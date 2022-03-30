@@ -3,8 +3,8 @@ LABEL maintainer="Dave Conroy (dave at tiredofit dot ca)"
 
 ### Set Defaults
 ENV TRAEFIK_VERSION=2.3.7 \
-    TRAEFIK_MIGRATION_TOOL_VERSION=0.13.1 \
-    TRAEFIK_CERT_DUMPER_VERSION=2.7.4 \
+    TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
+    TRAEFIK_CERT_DUMPER_VERSION=2.8.1 \
     ENABLE_SMTP=FALSE \
     IMAGE_NAME="tiredofit/traefik" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-traefik/"

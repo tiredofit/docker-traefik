@@ -1,3 +1,10 @@
+## 1.1.13 2022-03-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik cert dumper 2.8.1
+      - Traefik MIgration tool 0.13.4
+
+
 ## 1.1.12 2022-02-09 <dave at tiredofit dot ca>
 
    ### Changed
