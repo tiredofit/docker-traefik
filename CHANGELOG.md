@@ -1,3 +1,9 @@
+## 1.4.6 2022-03-30 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik Cert Dumper 2.8.1
+
+
 ## 1.4.5 2022-03-29 <dave at tiredofit dot ca>
 
    ### Added
