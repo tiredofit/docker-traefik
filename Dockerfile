@@ -1,8 +1,8 @@
-FROM docker.io/tiredofit/alpine:3.15
+FROM docker.io/tiredofit/alpine:3.16
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
-ENV TRAEFIK_VERSION=2.6.6 \
+ENV TRAEFIK_VERSION=2.6.7 \
     TRAEFIK_MIGRATION_TOOL_VERSION=0.13.4 \
     TRAEFIK_CERT_DUMPER_VERSION=2.8.1 \
     CONTAINER_ENABLE_MESSAGING=FALSE \
