@@ -1,4 +1,4 @@
-FROM tiredofit/alpine:3.15
+FROM tiredofit/alpine:3.16
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
