@@ -81,6 +81,10 @@ The following image tags are available along with their tagged release based on 
 | Traefik Version | OS Base | Tag           |
 | --------------- | ------- | ------------- |
 | latest          | Alpine  | `:latest`     |
+| 2.8.x           | Alpine  | `:2.8-latest` |
+| 2.7.x           | Alpine  | `:2.7-latest` |
+| 2.6.x           | Alpine  | `:2.6-latest` |
+| 2.5.x           | Alpine  | `:2.5-latest` |
 | 2.4.x           | Alpine  | `:2.4-latest` |
 | 2.3.x           | Alpine  | `:2.3-latest` |
 | 2.2.x           | Alpine  | `:2.2-latest` |
