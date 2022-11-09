@@ -46,6 +46,8 @@ if [ "$SETUP_TYPE" = "AUTO" ]; then
 		echo "  sendAnonymousUsage: false" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 	fi
 
+    echo "serversTransport:" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
+    echo "  insecureSkipVerify: ${SERVER_TRANSPORT_INSECURE_SKIP_VERIFY,,}" >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 	#### Entrypoints Setup
 	echo 'entryPoints:' >>"${TRAEFIK_CONFIG_PATH}"/"${TRAEFIK_CONFIG_FILE}"
 

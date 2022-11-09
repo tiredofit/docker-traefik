@@ -32,7 +32,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
 - [Installation](#installation)
   - [Build from Source](#build-from-source)
   - [Prebuilt Images](#prebuilt-images)
-    - [Multi Architecture](#multi-archictecture)
+    - [Multi Architecture](#multi-architecture)
 - [Configuration](#configuration)
   - [Quick Start](#quick-start)
   - [Persistent Storage](#persistent-storage)
@@ -45,6 +45,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
     - [LetsEncrypt Settings](#letsencrypt-settings)
     - [API / Dashboard Settings](#api--dashboard-settings)
     - [Certificate Dumper Settings](#certificate-dumper-settings)
+    - [Server Transports](#server-transports)
   - [Networking](#networking)
 - [Maintenance](#maintenance)
   - [Shell Access](#shell-access)
@@ -81,6 +82,7 @@ The following image tags are available along with their tagged release based on 
 | Traefik Version | OS Base | Tag           |
 | --------------- | ------- | ------------- |
 | latest          | Alpine  | `:latest`     |
+| 2.9.x           | Alpine  | `:2.9-latest` |
 | 2.8.x           | Alpine  | `:2.8-latest` |
 | 2.7.x           | Alpine  | `:2.7-latest` |
 | 2.6.x           | Alpine  | `:2.6-latest` |
@@ -249,6 +251,13 @@ By Default this image is ready to run out of the box, without having to alter an
 | `CERTIFICATE_DUMPER_POST_HOOK`    | *optional* Argument or external script to execute post dumping of certificates Where to put the dumped certificates - e.g. `chmod 644 ${CERTIFICATE_DUMPER_PATH}` |
 | `CERTIFICATE_DUMP_SUBDIRECTORIES` | Create subdirectories of hosts                                                                                                                                    | `TRUE`                             |
 | `CLEAN_DUMP_PATH`                 | Clean Dump path before redumping                                                                                                                                  | `FALSE`                            |
+
+#### Server Transports
+
+| Parameter                         | Description                                                                                                                                                       | Default                            |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `SERVER_TRANSPORT_INSECURE_SKIP_VERIFY` | Disable Certificate verification on Server Transports | `FALSE` |
+
 
 ### Networking
 

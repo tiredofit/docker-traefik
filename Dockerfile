@@ -45,5 +45,5 @@ RUN set -x && \
 EXPOSE 80 443
 
 ### Assets
-ADD install /
+COPY install /
 

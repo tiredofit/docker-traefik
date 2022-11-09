@@ -1,3 +1,9 @@
+## 1.4.23 2022-11-09 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add SERVER_TRANSPORT_INSECURE_SKIP_VERIFY feature
+
+
 ## 1.4.22 2022-10-27 <dave at tiredofit dot ca>
 
    ### Added
