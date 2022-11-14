@@ -254,8 +254,8 @@ By Default this image is ready to run out of the box, without having to alter an
 
 #### Server Transports
 
-| Parameter                         | Description                                                                                                                                                       | Default                            |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Parameter                               | Description                                           | Default |
+| --------------------------------------- | ----------------------------------------------------- | ------- |
 | `SERVER_TRANSPORT_INSECURE_SKIP_VERIFY` | Disable Certificate verification on Server Transports | `FALSE` |
 
 
