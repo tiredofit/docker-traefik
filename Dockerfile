@@ -1,4 +1,4 @@
-FROM docker.io/tiredofit/alpine:3.16
+FROM docker.io/tiredofit/alpine:3.17
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 
 ### Set Defaults
