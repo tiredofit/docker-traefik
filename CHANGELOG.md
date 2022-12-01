@@ -1,3 +1,12 @@
+## 1.5.0 2022-12-01 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Rework Dockerfile
+
+   ### Reverted
+      - Remove Traefik Migration Tool
+
+
 ## 1.4.26 2022-11-23 <dave at tiredofit dot ca>
 
    ### Added
