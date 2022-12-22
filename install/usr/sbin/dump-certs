@@ -1,3 +1,5 @@
 #!/bin/bash
+source /assets/defaults/10-traefik
+
 DATE=$(date +"%Y-%m-%d %H:%M:%S")
-/usr/local/bin/traefik-certs-dumper file --destg /traefik/certs/dump-${DATE} --domain-subdir=true --source /traefik/certs/acme.json
+/usr/local/bin/traefik-certs-dumper file --dest ${LETSENCRYPT_STORAGE_PATH}/dump-${DATE} --domain-subdir=true --source "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"

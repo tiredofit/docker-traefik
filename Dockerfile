@@ -10,19 +10,28 @@ ARG TRAEFIK_CERT_DUMPER_VERSION
 ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"2.9.6"} \
     TRAEFIK_CERT_DUMPER_VERSION=${TRAEFIK_CERT_DUMPER_VERSION:-"2.8.1"} \
     CONTAINER_ENABLE_MESSAGING=FALSE \
-    IMAGE_NAME="tiredofit/traefik" \
+    IMAGE_NAME="tiredofit/traefik:2.9" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-traefik/"
 
 RUN source /assets/functions/00-container && \
     set -x && \
+    addgroup -S -g 8080 traefik && \
+    adduser -D -S -s /sbin/nologin \
+            -h /dev/null \
+            -G traefik \
+            -g "traefik" \
+            -u 8080 traefik \
+            && \
+    \
     package update && \
     package upgrade && \
     package install .traefik-run-deps \
             apache2-utils \
+            yq \
             && \
     \
 ## Multi Arch Support
-    packageArch="$(package --print-arch)"; \
+    packageArch="$(apk --print-arch)"; \
 	case "$packageArch" in \
 		x86_64) Arch='amd64' ;; \
 		armv7) Arch='armv7' ;; \
@@ -45,4 +54,3 @@ RUN source /assets/functions/00-container && \
 EXPOSE 80 443
 
 COPY install /
-

@@ -1,8 +1,8 @@
-version: '3.7'
+version: '2.4'
 services:
- 
+
   traefik-app:
-    image: tiredofit/traefik:2.2-latest
+    image: tiredofit/traefik:2.9
     container_name: traefik-app
     environment:
       - CONTAINER_NAME=traefik-app
@@ -19,11 +19,11 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./config:/traefik/config
-      - ./logs:/traefik/logs
-      - ./certs:/traefik/certs
+      - ./config:/data/config
+      - ./logs:/data/logs
+      - ./certs:/data/certs
       - /var/run/docker.sock:/var/run/docker.sock
-      networks:
+    networks:
       - proxy
     restart: always
 
@@ -32,7 +32,7 @@ services:
     image: containous/whoami:v1.3.0
     labels:
       - traefik.enable=true
-      - traefik.http.routers.whoami.rule=Host(`whoami.example.com`) || Host(`whoami2.example.com`) 
+      - traefik.http.routers.whoami.rule=Host(`whoami.example.com`) || Host(`whoami2.example.com`)
       - traefik.http.services.whoami.loadbalancer.server.port=80
     networks:
       - proxy

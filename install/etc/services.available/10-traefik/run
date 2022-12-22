@@ -9,4 +9,6 @@ check_service_initialized init
 liftoff
 
 print_start "Starting traefik ${TRAEFIK_VERSION}"
-exec traefik --configfile ${TRAEFIK_CONFIG_PATH}${TRAEFIK_CONFIG_FILE}
+if [ "${LOG_TYPE}" = "file" ] ; then silent_arg="silent" ; fi
+${silent_arg} s6-setuidgid traefik exec traefik \
+                                    --configfile "${CONFIG_PATH}"/"${CONFIG_FILE}" ${TRAEFIK_ARGS}

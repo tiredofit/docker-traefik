@@ -1,0 +1,9 @@
+http:
+  routers:
+    dashboard:
+      entryPoints:
+        - websecure
+      service: api@internal
+      rule: Host`(traefik.example.com)`
+      tls:
+        certresolver: letsencrypt

@@ -1,3 +1,14 @@
+## 2.0.0 2022-12-21 <dave at tiredofit dot ca>
+
+This release contains breaking changes to environment variables and default path names and runtime settings
+
+   ### Added
+      - Rewrote entire image specifically configuration management with YAML generation as opposed to bash and echo statements
+      - Ability to run as non-root. Try using TRAEFIK_USER=traefik. This may affect your ability to use Docker Sockets.
+      - Reworked paths for config, data, certificates, and logs
+      - Reworked Log Levels and Log environment variables
+
+
 ## 1.5.1 2022-12-07 <dave at tiredofit dot ca>
 
    ### Added
