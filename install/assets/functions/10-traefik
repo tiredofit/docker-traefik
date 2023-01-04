@@ -17,18 +17,18 @@ bootstrap_filesystem() {
     if [ ! -d "${CONFIG_PATH}" ]; then
         mkdir -p "${CONFIG_PATH}"
     fi
-    if [ $(stat -c %U "${CONFIG_PATH}") != "traefik" ] ; then chown traefik:traefik "${CONFIG_PATH}" ; fi
+    if [ "$(stat -c %U "${CONFIG_PATH}")" != "traefik" ] ; then chown traefik:traefik "${CONFIG_PATH}" ; fi
     mkdir -p "${CONFIG_PATH}"
 
     if [ ! -d "${CONFIG_CUSTOM_PATH}" ]; then
         mkdir -p "${CONFIG_CUSTOM_PATH}"
     fi
-    if [ $(stat -c %U "${CONFIG_CUSTOM_PATH}") != "traefik" ] ; then chown traefik:traefik "${CONFIG_CUSTOM_PATH}" ; fi
+    if [ "$(stat -c %U "${CONFIG_CUSTOM_PATH}")" != "traefik" ] ; then chown traefik:traefik "${CONFIG_CUSTOM_PATH}" ; fi
 
     if [ ! -d "${LOG_PATH}" ]; then
         mkdir -p "${LOG_PATH}"
     fi
-    if [ $(stat -c %U "${LOG_PATH}") != "traefik" ] ; then chown traefik:traefik "${LOG_PATH}" ; fi
+    if [ "$(stat -c %U "${LOG_PATH}")" != "traefik" ] ; then chown traefik:traefik "${LOG_PATH}" ; fi
 }
 
 generate_configuration() {
@@ -76,7 +76,7 @@ EOF
 
             if var_true "${ENABLE_HTTP_PROXY_PROTOCOL}"; then
                 yq -i   '
-                            .entryPoints.web.ProxyProtocol.trustedIPs = [ "'$(echo ${TRUSTED_IPS//,/\",\"})'" ]
+                            .entryPoints.web.ProxyProtocol.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
@@ -119,7 +119,7 @@ EOF
 
             if var_true "${ENABLE_HTTPS_PROXY_PROTOCOL}"; then
                 yq -i   '
-                            .entryPoints.websecure.ProxyProtocol.trustedIPs = [ "'$(echo ${TRUSTED_IPS//,/\",\"})'" ]
+                            .entryPoints.websecure.ProxyProtocol.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
@@ -255,7 +255,7 @@ EOF
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
                 yq -i   '
-                            .http.routers.dashboard.rule = "Host(`'$(echo $TRAEFIK_VERSION)'`)"
+                            .http.routers.dashboard.rule = "Host(`'$(echo "${TRAEFIK_VERSION}")'`)"
                         ' /assets/traefik/dynamic/dashboard.yml
 
 
@@ -270,7 +270,7 @@ EOF
                             dashboard_encrypted_hash=$(htpasswd -nb "${DASHBOARD_ADMIN_USER}" "${DASHBOARD_ADMIN_PASS}")
                             yq -i   '
                                         .http.routers.dashboard.middlewares = [ "dashboard-auth" ] |
-                                        .http.middlewares.dashboard-auth.basicAuth.users = [ "'$(echo ${dashboard_encrypted_hash})'" ] |
+                                        .http.middlewares.dashboard-auth.basicAuth.users = [ "'$(echo "${dashboard_encrypted_hash}")'" ] |
                                         .http.middlewares.dashboard-auth.basicAuth.removeHeader = true
                                     ' /assets/traefik/dynamic/dashboard.yml
                         ;;
@@ -293,7 +293,7 @@ EOF
                     ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ "${LOG_FORMAT,,}" = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi
-            create_logrotate traefik ${LOG_PATH}/${LOG_FILE} traefik-${tlogfmt} traefik traefik
+            create_logrotate traefik "${LOG_PATH}"/"${LOG_FILE}" traefik-${tlogfmt} traefik traefik
         fi
 
         yq -i       '
@@ -305,9 +305,9 @@ EOF
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ "${LOG_FORMAT,,}" = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi
-            create_logrotate acess ${LOG_PATH}/${ACCESS_LOG_FILE} traefik-access-${tlogfmt} traefik traefik
+            create_logrotate traefik_acess "${LOG_PATH}"/"${ACCESS_LOG_FILE}" traefik-access-"${tlogfmt}" traefik traefik
 
-            if [ -n "$ACCESS_LOG_BUFFER_SIZE" ]; then
+            if [ -n "${ACCESS_LOG_BUFFER_SIZE}" ]; then
                 yq -i   '
                             .accessLog.bufferingSize = env(ACCESS_LOG_BUFFER_SIZE)
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
@@ -317,7 +317,7 @@ EOF
         #### Ping Information
         if var_true "${ENABLE_PING}"; then
             print_debug "Ping Enable"
-            if var_true ${ENABLE_HTTPS}; then
+            if var_true "${ENABLE_HTTPS}"; then
                 yq -i '
                         .ping.entryPoint = "websecure"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
@@ -370,11 +370,11 @@ EOF
         ### Copy Dynamic Configuration to Custom Location
         cp -R /assets/traefik/dynamic/* "${CONFIG_CUSTOM_PATH}"
         chown "${TRAEFIK_USER}":"${TRAEFIK_USER}" \
-                                                ${DATA_PATH} \
-                                                ${CONFIG_PATH} \
-                                                ${CONFIG_CUSTOM_PATH} \
-                                                ${LETSENCRYPT_STORAGE_PATH} \
-                                                ${LOG_PATH}
+                                                "${DATA_PATH}" \
+                                                "${CONFIG_PATH}" \
+                                                "${CONFIG_CUSTOM_PATH}" \
+                                                "${LETSENCRYPT_STORAGE_PATH}" \
+                                                "${LOG_PATH}"
     else
         print_warn "Manual Configuration Mode Activated"
         if [ ! -f "${CONFIG_PATH}"/"${CONFIG_FILE}" ]; then
