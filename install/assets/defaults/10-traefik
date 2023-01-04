@@ -1,6 +1,6 @@
 #!/command/with-contenv bash
 
-DATA_PATH=${DATA_PATH:-"/data"}
+DATA_PATH=${DATA_PATH:-"/data/"}
 CONFIG_PATH=${CONFIG_PATH:-"${DATA_PATH}/config/"}
 ### Keep this on top and in this order
 ACCESS_LOG_FILE=${ACCESS_LOG_FILE:-"access.log"}

@@ -51,47 +51,47 @@ generate_configuration() {
 EOF
 
         ## Global
-        yq -i '
-                .global.checkNewVersion = env(CHECK_NEW_VERSION) |
-                .global.sendAnonymousUsage = env(SEND_ANONYMOUS_USAGE)
-            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        yq -i   '
+                    .global.checkNewVersion = env(CHECK_NEW_VERSION) |
+                    .global.sendAnonymousUsage = env(SEND_ANONYMOUS_USAGE)
+                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
         ## Servers and Transports
-        yq -i '
-                .serversTransport.insecureSkipVerify = env(SERVER_TRANSPORT_INSECURE_SKIP_VERIFY)
-            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        yq -i   '
+                    .serversTransport.insecureSkipVerify = env(SERVER_TRANSPORT_INSECURE_SKIP_VERIFY)
+                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
         ### Entrypoints
         #### HTTP
         print_debug "HTTP Enable"
         if var_true "${ENABLE_HTTP}"; then
-            yq -i '
-                    .entryPoints.web.address = "'$(echo "${HTTP_LISTEN_IP}:${HTTP_LISTEN_PORT}")'" |
-                    .entryPoints.web.transport.respondingTimeouts.readTimeout = env(HTTP_TIMEOUT_READ) |
-                    .entryPoints.web.transport.respondingTimeouts.writeTimeout = env(HTTP_TIMEOUT_WRITE) |
-                    .entryPoints.web.transport.respondingTimeouts.idleTimeout = env(HTTP_TIMEOUT_IDLE) |
-                    .entryPoints.web.transport.lifeCycle.requestAcceptGraceTimeout = env(HTTP_TIMEOUT_LIFECYCLE_ACCEPT_GRACE) |
-                    .entryPoints.web.transport.lifeCycle.graceTimeout = env(HTTP_TIMEOUT_LIFECYCLE_GRACE)
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .entryPoints.web.address = "'$(echo "${HTTP_LISTEN_IP}:${HTTP_LISTEN_PORT}")'" |
+                        .entryPoints.web.transport.respondingTimeouts.readTimeout = env(HTTP_TIMEOUT_READ) |
+                        .entryPoints.web.transport.respondingTimeouts.writeTimeout = env(HTTP_TIMEOUT_WRITE) |
+                        .entryPoints.web.transport.respondingTimeouts.idleTimeout = env(HTTP_TIMEOUT_IDLE) |
+                        .entryPoints.web.transport.lifeCycle.requestAcceptGraceTimeout = env(HTTP_TIMEOUT_LIFECYCLE_ACCEPT_GRACE) |
+                        .entryPoints.web.transport.lifeCycle.graceTimeout = env(HTTP_TIMEOUT_LIFECYCLE_GRACE)
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if var_true "${ENABLE_HTTP_PROXY_PROTOCOL}"; then
-                yq -i '
+                yq -i   '
                             .entryPoints.web.ProxyProtocol.trustedIPs = [ "'$(echo ${TRUSTED_IPS//,/\",\"})'" ]
-                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
             if var_true "${ENABLE_HTTP_FORWARDED_HEADERS}"; then
-                yq -i '
-                        .entryPoints.web.forwardedHeaders.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .entryPoints.web.forwardedHeaders.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
             if var_true "${ENABLE_COMPRESSION_HTTP}" ; then
                 http_middleware="${http_middleware} compression_http@file"
                 if [ -n "${HTTP_COMPRESSION_EXCLUDE}" ]; then
-                    yq -i '
-                            .compress.excludedContentTypes = [ "'$(echo "${HTTP_COMPRESSION_EXCLUDE//,/\",\"}")'" ]
-                        ' /assets/traefik/dynamic/compression_http.yml
+                    yq -i   '
+                                .compress.excludedContentTypes = [ "'$(echo "${HTTP_COMPRESSION_EXCLUDE//,/\",\"}")'" ]
+                            ' /assets/traefik/dynamic/compression_http.yml
                 fi
             fi
         fi
@@ -101,49 +101,49 @@ EOF
             print_debug "{HTTPS Upgrade}"
             if var_true "${ENABLE_HTTPS_UPGRADE}"; then
                 http_middleware="${http_middleware} https_redirection@file"
-                yq -i '
-                        .entryPoints.web.http.redirections.entrypoint.to = "websecure" |
-                        .entryPoints.web.http.redirections.entrypoint.scheme = "https" |
-                        .entryPoints.web.http.redirections.entrypoint.permanent = true
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .entryPoints.web.http.redirections.entrypoint.to = "websecure" |
+                            .entryPoints.web.http.redirections.entrypoint.scheme = "https" |
+                            .entryPoints.web.http.redirections.entrypoint.permanent = true
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
-            yq -i '
-                    .entryPoints.websecure.address = "'$(echo "${HTTPS_LISTEN_IP}:${HTTPS_LISTEN_PORT}")'" |
-                    .entryPoints.websecure.transport.respondingTimeouts.readTimeout = env(HTTPS_TIMEOUT_READ) |
-                    .entryPoints.websecure.transport.respondingTimeouts.writeTimeout = env(HTTPS_TIMEOUT_WRITE) |
-                    .entryPoints.websecure.transport.respondingTimeouts.idleTimeout = env(HTTPS_TIMEOUT_IDLE) |
-                    .entryPoints.websecure.transport.lifeCycle.requestAcceptGraceTimeout = env(HTTPS_TIMEOUT_LIFECYCLE_ACCEPT_GRACE) |
-                    .entryPoints.websecure.transport.lifeCycle.graceTimeout = env(HTTPS_TIMEOUT_LIFECYCLE_GRACE)
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .entryPoints.websecure.address = "'$(echo "${HTTPS_LISTEN_IP}:${HTTPS_LISTEN_PORT}")'" |
+                        .entryPoints.websecure.transport.respondingTimeouts.readTimeout = env(HTTPS_TIMEOUT_READ) |
+                        .entryPoints.websecure.transport.respondingTimeouts.writeTimeout = env(HTTPS_TIMEOUT_WRITE) |
+                        .entryPoints.websecure.transport.respondingTimeouts.idleTimeout = env(HTTPS_TIMEOUT_IDLE) |
+                        .entryPoints.websecure.transport.lifeCycle.requestAcceptGraceTimeout = env(HTTPS_TIMEOUT_LIFECYCLE_ACCEPT_GRACE) |
+                        .entryPoints.websecure.transport.lifeCycle.graceTimeout = env(HTTPS_TIMEOUT_LIFECYCLE_GRACE)
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if var_true "${ENABLE_HTTPS_PROXY_PROTOCOL}"; then
-                yq -i '
+                yq -i   '
                             .entryPoints.websecure.ProxyProtocol.trustedIPs = [ "'$(echo ${TRUSTED_IPS//,/\",\"})'" ]
-                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
             if var_true "${ENABLE_HTTPS_FORWARDED_HEADERS}"; then
-                yq -i '
-                        .entryPoints.websecure.forwardedHeaders.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .entryPoints.websecure.forwardedHeaders.trustedIPs = [ "'$(echo "${TRUSTED_IPS//,/\",\"}")'" ]
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
             if var_true "${ENABLE_COMPRESSION_HTTPS}" ; then
                 https_middleware="${https_middleware} compression_https@file"
                 if [ -n "${HTTPS_COMPRESSION_EXCLUDE}" ]; then
-                    yq -i '
-                            .compress.excludedContentTypes = [ "'$(echo "${HTTPS_COMPRESSION_EXCLUDE//,/\",\"}")'" ]
-                        ' /assets/traefik/dynamic/compression_https.yml
+                    yq -i   '
+                                .compress.excludedContentTypes = [ "'$(echo "${HTTPS_COMPRESSION_EXCLUDE//,/\",\"}")'" ]
+                            ' /assets/traefik/dynamic/compression_https.yml
                 fi
             fi
 
             print_debug "HTTPS Entrypoint: LetsEncrypt"
             if var_true "${ENABLE_LETSENCRYPT}"; then
-                yq -i '
-                        .entryPoints.websecure.http.tls.options = "default" |
-                        .entryPoints.websecure.http.tls.certResolver = "letsencrypt"
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .entryPoints.websecure.http.tls.options = "default" |
+                            .entryPoints.websecure.http.tls.certResolver = "letsencrypt"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
         fi
 
@@ -160,9 +160,9 @@ EOF
         fi
 
         if [ -n "${http_middlewares}" ] ; then
-            yq -i '
-                    .entryPoints.web.http.middlewares = [ "'$(echo "${http_middlewares//,/\",\"}")'" ]
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .entryPoints.web.http.middlewares = [ "'$(echo "${http_middlewares//,/\",\"}")'" ]
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
         fi
 
         if [ -n "${https_middleware}" ] ; then
@@ -177,19 +177,19 @@ EOF
         fi
 
         if [ -n "${https_middlewares}" ] ; then
-            yq -i '
-                    .entryPoints.websecure.http.middlewares = [ "'$(echo "${https_middlewares//,/\",\"}")'" ]
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .entryPoints.websecure.http.middlewares = [ "'$(echo "${https_middlewares//,/\",\"}")'" ]
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
         fi
 
         ### TLS Options
-        yq -i '
-                .tls.options.default.MinVersion = env(TLS_MINIMUM_VERSION) |
-                .tls.options.default.sniStrict = env(ENABLE_HTTPS_SNI_STRICT) |
-                .tls.options.default.preferServerCipherSuites = env(TLS_PREFER_SERVER_CIPHERS) |
-                .tls.options.default.curvePreferences = [ "'$(echo "${TLS_CURVE_PREFERENCES//,/\",\"}")'" ] |
-                .tls.options.default.CipherSuites = [ "'$(echo "${TLS_CIPHERS//,/\",\"}")'" ]
-            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        yq -i   '
+                    .tls.options.default.MinVersion = env(TLS_MINIMUM_VERSION) |
+                    .tls.options.default.sniStrict = env(ENABLE_HTTPS_SNI_STRICT) |
+                    .tls.options.default.preferServerCipherSuites = env(TLS_PREFER_SERVER_CIPHERS) |
+                    .tls.options.default.curvePreferences = [ "'$(echo "${TLS_CURVE_PREFERENCES//,/\",\"}")'" ] |
+                    .tls.options.default.CipherSuites = [ "'$(echo "${TLS_CIPHERS//,/\",\"}")'" ]
+                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
 	    #### LetsEncrypt Support
         print_debug "LetsEncrypt Setup"
@@ -201,39 +201,39 @@ EOF
             sudo -u traefik touch "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
             chmod 0600 "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
 
-            yq -i '
-                    .certificatesResolvers.letsencrypt.acme.email = env(LETSENCRYPT_EMAIL) |
-                    .certificatesResolvers.letsencrypt.acme.storage = "'$(echo "${LETSENCRYPT_STORAGE_PATH}/${LETSENCRYPT_STORAGE_FILE}")'" |
-                    .certificatesResolvers.letsencrypt.acme.KeyType = env(LETSENCRYPT_KEYTYPE)
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .certificatesResolvers.letsencrypt.acme.email = env(LETSENCRYPT_EMAIL) |
+                        .certificatesResolvers.letsencrypt.acme.storage = "'$(echo "${LETSENCRYPT_STORAGE_PATH}/${LETSENCRYPT_STORAGE_FILE}")'" |
+                        .certificatesResolvers.letsencrypt.acme.KeyType = env(LETSENCRYPT_KEYTYPE)
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ "${LETSENCRYPT_SERVER,,}" = "staging" ]; then
-                yq -i '
-                        .certificatesResolvers.letsencrypt.acme.caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .certificatesResolvers.letsencrypt.acme.caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
     		#### LetsEncrypt Challenges
             case "${LETSENCRYPT_CHALLENGE,,}" in
                 "tls")
-                    yq -i '
-                            .certificatesResolvers.letsencrypt.acme.tlsChallenge = {}
-                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                    yq -i   '
+                                .certificatesResolvers.letsencrypt.acme.tlsChallenge = {}
+                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
                 ;;
                 "http")
-                    yq -i '
-                            .certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint = "web"
-                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                    yq -i   '
+                                .certificatesResolvers.letsencrypt.acme.httpChallenge.entryPoint = "web"
+                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
                 ;;
                 "dns")
-                    yq -i '
-                            .certificatesResolvers.letsencrypt.acme.dnsChallenge.provider = env(LETSENCRYPT_DNS_PROVIDER)
-                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                    yq -i   '
+                                .certificatesResolvers.letsencrypt.acme.dnsChallenge.provider = env(LETSENCRYPT_DNS_PROVIDER)
+                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
        			    if [ -n "$LETSENCRYPT_DNS_RESOLVER" ]; then
-                        yq -i '
-                                .certificatesResolvers.letsencrypt.acme.dnsChallenge.resolvers = [ "'$(echo "${LETSENCRYPT_DNS_RESOLVER//,/\",\"}")'" ]
-                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                        yq -i   '
+                                    .certificatesResolvers.letsencrypt.acme.dnsChallenge.resolvers = [ "'$(echo "${LETSENCRYPT_DNS_RESOLVER//,/\",\"}")'" ]
+                                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
                     fi
                    ;;
                 esac
@@ -242,37 +242,37 @@ EOF
         #### API and dashboard
         print_debug "API Enable"
         if var_true "${ENABLE_API}"; then
-            yq -i '
-                    .api = {}
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .api = {}
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             print_debug "Dashboard Enable"
             if var_true "${ENABLE_DASHBOARD}"; then
                 sanity_var DASHBOARD_HOSTNAME "Dashboard Hostname e.g. 'traefik.example.com'"
 
-                yq -i '
-                    .api.dashboard = true
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .api.dashboard = true
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
-                yq -i '
-                        .http.routers.dashboard.rule = "Host(`'$(echo $TRAEFIK_VERSION)'`)"
-                    ' /assets/traefik/dynamic/dashboard.yml
+                yq -i   '
+                            .http.routers.dashboard.rule = "Host(`'$(echo $TRAEFIK_VERSION)'`)"
+                        ' /assets/traefik/dynamic/dashboard.yml
 
 
                 if var_true "${ENABLE_DASHBOARD_AUTHENTICATION}"; then
-                    yq -i '
-                            .http.routers.dashboard.middlewares = [ "dashboard-auth" ]
-                        ' /assets/traefik/dynamic/dashboard.yml
+                    yq -i   '
+                                .http.routers.dashboard.middlewares = [ "dashboard-auth" ]
+                            ' /assets/traefik/dynamic/dashboard.yml
 
                     print_debug "Dashboard Authentication Type"
                     case "${DASHBOARD_AUTHENTICATION_TYPE,,}" in
                         "basic")
                             dashboard_encrypted_hash=$(htpasswd -nb "${DASHBOARD_ADMIN_USER}" "${DASHBOARD_ADMIN_PASS}")
-                            yq -i '
-                                .http.routers.dashboard.middlewares = [ "dashboard-auth" ] |
-                                .http.middlewares.dashboard-auth.basicAuth.users = [ "'$(echo ${dashboard_encrypted_hash})'" ] |
-                                .http.middlewares.dashboard-auth.basicAuth.removeHeader = true
-                                ' /assets/traefik/dynamic/dashboard.yml
+                            yq -i   '
+                                        .http.routers.dashboard.middlewares = [ "dashboard-auth" ] |
+                                        .http.middlewares.dashboard-auth.basicAuth.users = [ "'$(echo ${dashboard_encrypted_hash})'" ] |
+                                        .http.middlewares.dashboard-auth.basicAuth.removeHeader = true
+                                    ' /assets/traefik/dynamic/dashboard.yml
                         ;;
                     esac
 
@@ -282,34 +282,35 @@ EOF
 
         #### Logging
         print_debug "Traefik Logging"
-        yq -i '
-                .log.format = env(LOG_FORMAT) |
-                .log.level = env(LOG_LEVEL)
-            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        yq -i   '
+                    .log.format = env(LOG_FORMAT) |
+                    .log.level = env(LOG_LEVEL)
+                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
         if [ "${LOG_TYPE,,}" = "file" ]; then
-            yq -i '
-                    .log.filePath = "'$(echo "${LOG_PATH}/${LOG_FILE}")'"
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            yq -i   '
+                        .log.filePath = "'$(echo "${LOG_PATH}/${LOG_FILE}")'"
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ "${LOG_FORMAT,,}" = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi
             create_logrotate traefik ${LOG_PATH}/${LOG_FILE} traefik-${tlogfmt} traefik traefik
         fi
 
-        yq -i '
-                .accessLog.format = env(ACCESS_LOG_FORMAT)
-            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        yq -i       '
+                        .accessLog.format = env(ACCESS_LOG_FORMAT)
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
         if [ "${ACCESS_LOG_TYPE,,}" = "file" ]; then
-            yq -i '
-                    .accessLog.filePath = "'$(echo "${LOG_PATH}/${ACCESS_LOG_FILE}")'"
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .accessLog.filePath = "'$(echo "${LOG_PATH}/${ACCESS_LOG_FILE}")'"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ "${LOG_FORMAT,,}" = "json" ] ; then tlogfmt="json" ; else tlogfmt="standard" ; fi
             create_logrotate acess ${LOG_PATH}/${ACCESS_LOG_FILE} traefik-access-${tlogfmt} traefik traefik
+
             if [ -n "$ACCESS_LOG_BUFFER_SIZE" ]; then
-                yq -i '
-                    .accessLog.bufferingSize = env(ACCESS_LOG_BUFFER_SIZE)
-                ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .accessLog.bufferingSize = env(ACCESS_LOG_BUFFER_SIZE)
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
         fi
 
@@ -331,7 +332,7 @@ EOF
         #### File Provider
         yq -i '
 
-                .providers.file.directory = "'$(echo "${CONFIG_CUSTOM_PATH}")'" |
+                .providers.file.directory = "'$(echo "${CONFIG_CUSTOM_PATH}")'" |A
                 .providers.file.watch = true
                 ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
