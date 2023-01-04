@@ -29,6 +29,15 @@ bootstrap_filesystem() {
         mkdir -p "${LOG_PATH}"
     fi
     if [ "$(stat -c %U "${LOG_PATH}")" != "traefik" ] ; then chown traefik:traefik "${LOG_PATH}" ; fi
+    if [ "$(stat -c %a "${LOG_PATH}")" != "755" ] ; then chmod -R 755 "${LOG_PATH}" ; fi
+
+    if var_true "${ENABLE_CERTIFICATE_DUMPER}" ; then
+        if [ ! -d "${CERTIFICATE_DUMP_PATH}" ] ; then
+            mkdir -p "${CERTIFICATE_DUMP_PATH}"
+        fi
+        if [ "$(stat -c %U "${CERTIFICATE_DUMP_PATH}")" != "traefik" ] ; then chown -R traefik:traefik "${CERTIFICATE_DUMP_PATH}" ; fi
+        if [ "$(stat -c %a "${CERTIFICATE_DUMP_PATH}")" != "755" ] ; then chmod -R 755 "${CERTIFICATE_DUMP_PATH}" ; fi
+    fi
 }
 
 generate_configuration() {
@@ -255,7 +264,7 @@ EOF
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
                 yq -i   '
-                            .http.routers.dashboard.rule = "Host(`'$(echo "${TRAEFIK_VERSION}")'`)"
+                            .http.routers.dashboard.rule = "Host(`'$(echo "${DASHBOARD_HOSTNAME}")'`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
                         ' /assets/traefik/dynamic/dashboard.yml
 
 
@@ -299,6 +308,7 @@ EOF
         yq -i       '
                         .accessLog.format = env(ACCESS_LOG_FORMAT)
                     ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+
         if [ "${ACCESS_LOG_TYPE,,}" = "file" ]; then
                 yq -i   '
                             .accessLog.filePath = "'$(echo "${LOG_PATH}/${ACCESS_LOG_FILE}")'"
@@ -318,58 +328,57 @@ EOF
         if var_true "${ENABLE_PING}"; then
             print_debug "Ping Enable"
             if var_true "${ENABLE_HTTPS}"; then
-                yq -i '
-                        .ping.entryPoint = "websecure"
+                yq -i   '
+                            .ping.entryPoint = "websecure"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             else
-                yq -i '
-                        .ping.entryPoint = "web"
+                yq -i   '
+                            .ping.entryPoint = "web"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
         fi
 
         ### Providers
         #### File Provider
-        yq -i '
-
-                .providers.file.directory = "'$(echo "${CONFIG_CUSTOM_PATH}")'" |A
-                .providers.file.watch = true
+        yq -i   '
+                    .providers.file.directory = "'$(echo "${CONFIG_CUSTOM_PATH}")'" |
+                    .providers.file.watch = true
                 ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
         #### Docker Provider
         print_debug "Docker Provider"
         if var_true "${ENABLE_DOCKER}"; then
-            yq -i '
-                    .providers.docker.endpoint = env(DOCKER_ENDPOINT) |
-                    .providers.docker.DefaultRule = env(DOCKER_DEFAULT_HOST_RULE) |
-                    .providers.docker.exposedbyDefault = env(DOCKER_EXPOSE_CONTAINERS) |
-                    .providers.docker.constraints = env(DOCKER_CONSTRAINTS) |
-                    .providers.docker.watch = true |
-                    .providers.docker.swarmMode =  env(ENABLE_DOCKER_SWARM_MODE) |
-                    .providers.docker.swarmModeRefreshSeconds = env(DOCKER_SWARM_MODE_REFRESH)
+            yq -i   '
+                        .providers.docker.endpoint = env(DOCKER_ENDPOINT) |
+                        .providers.docker.DefaultRule = env(DOCKER_DEFAULT_HOST_RULE) |
+                        .providers.docker.exposedbyDefault = env(DOCKER_EXPOSE_CONTAINERS) |
+                        .providers.docker.constraints = env(DOCKER_CONSTRAINTS) |
+                        .providers.docker.watch = true |
+                        .providers.docker.swarmMode =  env(ENABLE_DOCKER_SWARM_MODE) |
+                        .providers.docker.swarmModeRefreshSeconds = env(DOCKER_SWARM_MODE_REFRESH)
                     ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ -n "${DOCKER_DEFAULT_NETWORK}" ]; then
-                yq -i '
-                        .providers.docker.network = "'$(echo "${DOCKER_DEFAULT_NETWORK}")'"
+                yq -i   '
+                            .providers.docker.network = "'$(echo "${DOCKER_DEFAULT_NETWORK}")'"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
 
             if var_true "${ENABLE_DOCKER_TLS}"; then
                 print_debug "Docker TLS"
-                yq -i '
-                    .providers.docker.tls.ca = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_CA_FILE}")'" |
-                    .providers.docker.tls.caOptional = " |
-                    .providers.docker.tls.cert = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_CERT_FILE}")'" |
-                    .providers.docker.tls.key = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_KEY_FILE}")'" |
-                    .providers.docker.tls.insecureSkipVerify = "'$(echo "${DOCKER_TLS_INSECURESKIPVERIFY}")'"
-                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                yq -i   '
+                            .providers.docker.tls.ca = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_CA_FILE}")'" |
+                            .providers.docker.tls.caOptional = " |
+                            .providers.docker.tls.cert = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_CERT_FILE}")'" |
+                            .providers.docker.tls.key = "'$(echo "${DOCKER_TLS_CERT_PATH}/${DOCKER_TLS_KEY_FILE}")'" |
+                            .providers.docker.tls.insecureSkipVerify = "'$(echo "${DOCKER_TLS_INSECURESKIPVERIFY}")'"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
         fi
 
         ### Copy Dynamic Configuration to Custom Location
         cp -R /assets/traefik/dynamic/* "${CONFIG_CUSTOM_PATH}"
-        chown "${TRAEFIK_USER}":"${TRAEFIK_USER}" \
+        chown -R "${TRAEFIK_USER}":"${TRAEFIK_USER}" \
                                                 "${DATA_PATH}" \
                                                 "${CONFIG_PATH}" \
                                                 "${CONFIG_CUSTOM_PATH}" \

@@ -2,8 +2,11 @@
 
 source /assets/functions/00-container
 set -a
-prepare_service
+source /assets/defaults/10-traefik
+source /assets/defaults/20-traefik-cert-dumper
 set +a
+source /assets/functions/10-traefik
+
 PROCESS_NAME="traefik"
 
 bootstrap_filesystem
