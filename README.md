@@ -204,7 +204,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | `ENABLE_HTTPS_UPGRADE`           | Automatically forward HTTP -> HTTPS                 | `TRUE`                                                                           |
 | `ENABLE_HTTPS_SNI_STRICT`        | Enable Strict SNI Checking for Certificates         | `FALSE`                                                                          |
 | `ENABLE_HTTPS_PROXY_PROTOCOL`    | Enable HTTP Proxy Protocol Support                  | `FALSE`                                                                          |
-| `TRUSTED_IPS`                    | Use for Proxy Protocol Variables - Comma Seperated. | ``127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`                          |
+| `TRUSTED_IPS`                    | Use for Proxy Protocol Variables - Comma Seperated. | `127.0.0.1/32,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16`                           |
 | `TLS_MINIMUM_VERSION`            | Set TLS Minimum Version for HTTPS                   | `VersionTLS12`                                                                   |
 | `TLS_CIPHERS`                    | Set Ciphers                                         | `TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,`                                       |
 |                                  |                                                     | `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,` |

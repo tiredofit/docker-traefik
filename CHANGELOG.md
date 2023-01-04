@@ -1,3 +1,11 @@
+## 2.0.1 2023-01-04 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Better indentations for code
+      - Re-enable Dashboard
+      - Change permissions on startup for Traefik Cert Dumper if running as someone other than root
+
+
 ## 2.0.0 2022-12-21 <dave at tiredofit dot ca>
 
 This release contains breaking changes to environment variables and default path names and runtime settings
