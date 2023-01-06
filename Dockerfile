@@ -7,8 +7,10 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ARG TRAEFIK_VERSION
 ARG TRAEFIK_CERT_DUMPER_VERSION
 
-ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"2.9.6"} \
-    TRAEFIK_CERT_DUMPER_VERSION=${TRAEFIK_CERT_DUMPER_VERSION:-"2.8.1"} \
+ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v2.9.6"} \
+    TRAEFIK_CERT_DUMPER_VERSION=${TRAEFIK_CERT_DUMPER_VERSION:-"v2.8.1"} \
+    TRAEFIK_REPO_URL=${TRAEFIK_REPO_URL:-"https://github.com/traefik/traefik"} \
+    TRAEFIK_CERT_DUMPER_REPO_URL=${TRAEFIK_CERT_DUMPER_REPO_URL:-"https://github.com/ldez/traefik-certs-dumper"} \
     CONTAINER_ENABLE_MESSAGING=FALSE \
     IMAGE_NAME="tiredofit/traefik:2.9" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-traefik/"
@@ -25,9 +27,19 @@ RUN source /assets/functions/00-container && \
     \
     package update && \
     package upgrade && \
+    #package install .traefik-build-deps \
+    #                go \
+    #                make \
+    #                nodejs \
+    #                yarn \
+    #                && \
+    package install .traefik-cert-dumper-build-deps \
+                    binutils \
+                    go \
+                    make \
+                    && \
     package install .traefik-run-deps \
             apache2-utils \
-            yq \
             && \
     \
 ## Multi Arch Support
@@ -40,16 +52,32 @@ RUN source /assets/functions/00-container && \
 		*) Arch='386' ;; \
 	esac; \
     \
-    curl -sSL https://github.com/containous/traefik/releases/download/v${TRAEFIK_VERSION}/traefik_v${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
+    #clone_git_repo "${TRAEFIK_REPO_URL}" "${TRAEFIK_VERSION}" && \
+    #cd web-ui && \
+    #NODE_ENV=production yarn install && \
+    #NODE_ENV=production yarn build && \
+    #go generate && \
+    #go build ./cmd/traefik && \
+    curl -sSL https://github.com/containous/traefik/releases/download/${TRAEFIK_VERSION}/traefik_${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
     chmod +x /usr/local/bin/traefik && \
     \
 ### Download Certificate Dumper
-    curl -sSL https://github.com/ldez/traefik-certs-dumper/releases/download/v${TRAEFIK_CERT_DUMPER_VERSION}/traefik-certs-dumper_v${TRAEFIK_CERT_DUMPER_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik-certs-dumper && \
-    chmod +x /usr/local/bin/traefik-certs-dumper && \
+    clone_git_repo "${TRAEFIK_CERT_DUMPER_REPO_URL}" "${TRAEFIK_CERT_DUMPER_VERSION}" && \
+    sed -i -e "s|keyPath, cert.Key, 0o600|keyPath, cert.Key, 0o644|g" dumper/*/dumper.go && \
+    make build && \
+    strip traefik-certs-dumper && \
+    cp traefik-certs-dumper /usr/sbin/ && \
     \
+    package remove \
+                    #.traefik-build-deps \
+                    .traefik-cert-dumper-build-deps \
+                    && \
     package cleanup && \
-    rm -rf /usr/src/* \
-           /var/tmp/*
+    rm -rf \
+            /root/.cache \
+            /root/.go \
+            /usr/src/*
+
 
 EXPOSE 80 443
 

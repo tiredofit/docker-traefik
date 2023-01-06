@@ -1,3 +1,11 @@
+## 2.0.2 2023-01-05 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Change Traefik certificate dumper permissions for dumps to 644
+      - Build Traefik certificate dumper from source
+      - Fix for posthook for Traefik certificate dumper
+
+
 ## 2.0.1 2023-01-04 <dave at tiredofit dot ca>
 
    ### Changed
