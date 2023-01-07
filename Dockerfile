@@ -75,7 +75,7 @@ RUN source /assets/functions/00-container && \
     package cleanup && \
     rm -rf \
             /root/.cache \
-            /root/.go \
+            /root/go \
             /usr/src/*
 
 
