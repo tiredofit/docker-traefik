@@ -353,9 +353,11 @@ EOF
                         .providers.docker.DefaultRule = env(DOCKER_DEFAULT_HOST_RULE) |
                         .providers.docker.exposedbyDefault = env(DOCKER_EXPOSE_CONTAINERS) |
                         .providers.docker.constraints = env(DOCKER_CONSTRAINTS) |
+                        .providers.docker.httpClientTimeout = env(DOCKER_HTTP_TIMEOUT) |
                         .providers.docker.watch = true |
                         .providers.docker.swarmMode =  env(ENABLE_DOCKER_SWARM_MODE) |
                         .providers.docker.swarmModeRefreshSeconds = env(DOCKER_SWARM_MODE_REFRESH)
+
                     ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
 
             if [ -n "${DOCKER_DEFAULT_NETWORK}" ]; then

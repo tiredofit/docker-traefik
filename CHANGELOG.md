@@ -1,3 +1,9 @@
+## 2.0.3 2023-01-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add `DOCKER_HTTP_TIMEOUT` environment variable and default `600`
+
+
 ## 2.0.2 2023-01-05 <dave at tiredofit dot ca>
 
    ### Changed

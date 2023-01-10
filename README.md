@@ -172,6 +172,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | `DOCKER_CONSTANTS`          | Docker Constraints                                          | `""`                            |
 | `DOCKER_DEFAULT_HOST_RULE`  | Docker Access rule - Default: Host(`{{ normalize .Name }}`) | "Host(`{{ normalize .Name }}`)" |
 | `DOCKER_DEFAULT_NETWORK`    | Default Network for Traefik to operate on                   | `proxy`                         |
+| `DOCKER_HTTP_TIMEOUT`       | Timeout in seconds for HTTP connections                     | `600`                           |
 | `ENABLE_DOCKER_SWARM_MODE`  | Enable Swarm Mode                                           | `FALSE`                         |
 | `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds                                    | `15`                            |
 | `DOCKER_EXPOSE_CONTAINERS`  | Expose Containers by Default                                | `FALSE`                         |
