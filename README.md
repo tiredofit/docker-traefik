@@ -79,7 +79,7 @@ docker pull docker.io/tiredofdit/traefik:(imagetag)
 Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-traefik/pkgs/container/docker-traefik) 
  
 ```
-docker pull ghcr.io/tiredofit/docker-traefik/pkgs/container/docker-traefik):(imagetag)
+docker pull ghcr.io/tiredofit/docker-traefik:(imagetag)
 ``` 
 
 The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
