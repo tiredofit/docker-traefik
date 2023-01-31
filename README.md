@@ -1,7 +1,7 @@
 # github.com/tiredofit/docker-traefik
 
 [![GitHub release](https://img.shields.io/github/v/tag/tiredofit/docker-traefik?style=flat-square)](https://github.com/tiredofit/docker-traefik/releases/latest)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/tiredofit/docker-traefik.git/main.yml?branch=2.9&style=flat-square)](https://github.com/tiredofit/docker-traefik.git/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tiredofit/docker-traefikmain.yml?branch=2.9&style=flat-square)](https://github.com/tiredofit/docker-traefik.git/actions)
 [![Docker Stars](https://img.shields.io/docker/stars/tiredofit/traefik.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/traefik/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/tiredofit/traefik.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tiredofit/traefik/)
 [![Become a sponsor](https://img.shields.io/badge/sponsor-tiredofit-181717.svg?logo=github&style=flat-square)](https://github.com/sponsors/tiredofit)
