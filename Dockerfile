@@ -12,7 +12,7 @@ ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v2.9.9"} \
     TRAEFIK_REPO_URL=${TRAEFIK_REPO_URL:-"https://github.com/traefik/traefik"} \
     TRAEFIK_CERT_DUMPER_REPO_URL=${TRAEFIK_CERT_DUMPER_REPO_URL:-"https://github.com/ldez/traefik-certs-dumper"} \
     CONTAINER_ENABLE_MESSAGING=FALSE \
-    IMAGE_NAME="tiredofit/traefik:2.9" \
+    IMAGE_NAME="tiredofit/traefik" \
     IMAGE_REPO_URL="https://github.com/tiredofit/docker-traefik/"
 
 RUN source /assets/functions/00-container && \

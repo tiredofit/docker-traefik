@@ -1,4 +1,10 @@
-## 2.9-2.9-2.8 2023-03-21 <dave at tiredofit dot ca>
+## 2.9-2.9 2023-03-30 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Remove suffix from IMAGE_NAME making versions get weird.
+
+
+## 2.9-2.8 2023-03-21 <dave at tiredofit dot ca>
 
    ### Added
       - Traefik 2.9.9
