@@ -43,6 +43,7 @@ This will build an image for [Traefik](https://traefik.io/) a modernized proxy b
     - [Docker Settings](#docker-settings)
     - [HTTP/HTTPS Settings](#httphttps-settings)
     - [LetsEncrypt Settings](#letsencrypt-settings)
+    - [Metrics](#metrics)
     - [API / Dashboard Settings](#api--dashboard-settings)
     - [Certificate Dumper Settings](#certificate-dumper-settings)
     - [Server Transports](#server-transports)
@@ -76,11 +77,11 @@ Builds of the image are available on [Docker Hub](https://hub.docker.com/r/tired
 docker pull docker.io/tiredofdit/traefik:(imagetag)
 ```
 
-Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-traefik/pkgs/container/docker-traefik) 
- 
+Builds of the image are also available on the [Github Container Registry](https://github.com/tiredofit/docker-traefik/pkgs/container/docker-traefik)
+
 ```
 docker pull ghcr.io/tiredofit/docker-traefik:(imagetag)
-``` 
+```
 
 The following image tags are available along with their tagged release based on what's written in the [Changelog](CHANGELOG.md):
 
@@ -237,6 +238,15 @@ By Default this image is ready to run out of the box, without having to alter an
 | `LETSENCRYPT_DNS_DOMAIN2_SANS`    | Similar to above with additional number tacked on..                                      |                      |
 
 **If using DNS Challenges, you will need to add additional Environment Variables for your DNS servers API/credentials** See Traefik Documentation.
+
+#### Metrics
+| Parameter             | Description               | Default      |
+| --------------------- | ------------------------- | ------------ |
+| `ENABLE_METRICS`      | Enable Metrics            | `TRUE`       |
+| `METRICS_TYPE`        | Metrics Type `prometheus` | `prometheus` |
+| `METRICS_LISTEN_IP`   | Listen IP                 | `0.0.0.0`    |
+| `METRICS_LISTEN_PORT` | Metrics Listen Port       | `8082`       |
+| `METRICS_ENTRYPOINT`  | Metrics Entrypoint        | `metrics`    |
 
 #### API / Dashboard Settings
 

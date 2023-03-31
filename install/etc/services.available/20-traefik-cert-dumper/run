@@ -14,7 +14,7 @@ if [ -n "${CERTIFICATE_DUMP_POST_HOOK}" ] ; then
 fi
 
 print_start "Starting Traefik Certificate Dumper ${TRAEFIK_CERT_DUMPER_VERSION}"
-silent s6-setuidgid ${TRAEFIK_USER} exec traefik-certs-dumper file --source "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}" \
+silent s6-setuidgid "${TRAEFIK_USER}" exec traefik-certs-dumper file --source "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}" \
                                --dest "${CERTIFICATE_DUMP_PATH}" \
                                --domain-subdir=${CERTIFICATE_DUMP_SUBDIRECTORIES} \
                                --crt-name cert \

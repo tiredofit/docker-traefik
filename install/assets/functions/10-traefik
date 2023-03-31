@@ -156,6 +156,12 @@ EOF
             fi
         fi
 
+        if var_true "${ENABLE_METRICS}" ; then
+                yq -i   '
+                            .entryPoints.'$(echo "${METRICS_ENTRYPOINT}"'.address = "'$(echo "${METRICS_LISTEN_IP}:${METRICS_LISTEN_PORT}")'"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        fi
+
         ### Build Middlewares
         if [ -n "${http_middleware}" ] ; then
             http_middlewares="$(echo "${http_middleware}" | sed -e "s|^ ||g" -e "s| |,|g")"
@@ -322,6 +328,13 @@ EOF
                             .accessLog.bufferingSize = env(ACCESS_LOG_BUFFER_SIZE)
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
             fi
+        fi
+
+        #### Metrics
+        if var_true "${ENABLE_METRICS}" ; then
+            yq -i   '
+                        .metrics.'$(echo "${METRICS_TYPE}")'.entrypoint = env(METRICS_ENTRYPOINT)
+                    ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
         fi
 
         #### Ping Information
