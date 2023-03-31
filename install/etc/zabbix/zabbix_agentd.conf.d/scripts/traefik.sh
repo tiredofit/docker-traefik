@@ -12,43 +12,43 @@ port=${3:-"8080"}
 
 get_statistics() {
 	if var_true "${ENABLE_API}" ; then
+        monitor_url="${protocol}://${url}:${port}/health"
 		if var_true "${ENABLE_DASHBOARD_AUTHENTICATION}" ] ; then
-				url="${protocol}://${DASHBOARD_ADMIN_USER}:${DASHBOARD_ADMIN_PASS}@${url}:${port}/health"
-		else
-				url="${protocol}://${url}:${port}/health"
-		fi
-		output=$(curl --silent -X GET ${url})
+		        output=$(curl --silent --netrc-file <(cat <<<"machine $url login $DASHBOARD_ADMIN_USER password $DASHBOARD_ADMIN_PASS") -X GET "${monitor_url}")
+        else
+				output=$(curl --silent -X GET "${monitor_url}")
+    	fi
 	fi
 
-	pid=$( echo "$output" | jq '.["pid"]' )
-	uptime=$(echo "$output" | jq '.["uptime_sec"]')
-	status_code_count=$(echo "$output" | jq '.["status_code_count"]')
-	total_status_200=$(echo "$output" | jq '.["total_status_code_count"]["200"]')
-	total_status_201=$(echo "$output" | jq '.["total_status_code_count"]["201"]')
-	total_status_204=$(echo "$output" | jq '.["total_status_code_count"]["204"]')
-	total_status_301=$(echo "$output" | jq '.["total_status_code_count"]["301"]')
-	total_status_302=$(echo "$output" | jq '.["total_status_code_count"]["302"]')
-	total_status_303=$(echo "$output" | jq '.["total_status_code_count"]["303"]')
-	total_status_304=$(echo "$output" | jq '.["total_status_code_count"]["304"]')
-	total_status_308=$(echo "$output" | jq '.["total_status_code_count"]["308"]')
-	total_status_401=$(echo "$output" | jq '.["total_status_code_count"]["401"]')
-	total_status_403=$(echo "$output" | jq '.["total_status_code_count"]["403"]')
-	total_status_404=$(echo "$output" | jq '.["total_status_code_count"]["404"]')
-	total_status_407=$(echo "$output" | jq '.["total_status_code_count"]["407"]')
-	total_status_499=$(echo "$output" | jq '.["total_status_code_count"]["499"]')
-	total_status_500=$(echo "$output" | jq '.["total_status_code_count"]["500"]')
-	total_status_501=$(echo "$output" | jq '.["total_status_code_count"]["501"]')
-	total_status_502=$(echo "$output" | jq '.["total_status_code_count"]["502"]')
-	total_status_503=$(echo "$output" | jq '.["total_status_code_count"]["503"]')
-	total_status_504=$(echo "$output" | jq '.["total_status_code_count"]["504"]')
-	count=$(echo "$output" | jq '.["count"]')
-	total_count=$(echo "$output" | jq '.["total_count"]')
-	total_response_time=$(echo "$output" | jq '.["total_response_time_sec"]')
-	total_response_size=$(echo "$output" | jq '.["total_response_size"]')
-	average_response_time=$(echo "$output" | jq '.["average_response_time"]')
-	average_response_size=$(echo "$output" | jq '.["average_response_size"]')
-	average_metrics_timers=$(echo "$output" | jq '.["average_metrics_timers"]')
-	average_metrics_count=$(echo "$output" | jq '.["average_metrics_count"]')
+	pid=$( echo "${output}" | jq '.["pid"]' )
+	uptime=$(echo "${output}" | jq '.["uptime_sec"]')
+	status_code_count=$(echo "${output}" | jq '.["status_code_count"]')
+	total_status_200=$(echo "${output}" | jq '.["total_status_code_count"]["200"]')
+	total_status_201=$(echo "${output}" | jq '.["total_status_code_count"]["201"]')
+	total_status_204=$(echo "${output}" | jq '.["total_status_code_count"]["204"]')
+	total_status_301=$(echo "${output}" | jq '.["total_status_code_count"]["301"]')
+	total_status_302=$(echo "${output}" | jq '.["total_status_code_count"]["302"]')
+	total_status_303=$(echo "${output}" | jq '.["total_status_code_count"]["303"]')
+	total_status_304=$(echo "${output}" | jq '.["total_status_code_count"]["304"]')
+	total_status_308=$(echo "${output}" | jq '.["total_status_code_count"]["308"]')
+	total_status_401=$(echo "${output}" | jq '.["total_status_code_count"]["401"]')
+	total_status_403=$(echo "${output}" | jq '.["total_status_code_count"]["403"]')
+	total_status_404=$(echo "${output}" | jq '.["total_status_code_count"]["404"]')
+	total_status_407=$(echo "${output}" | jq '.["total_status_code_count"]["407"]')
+	total_status_499=$(echo "${output}" | jq '.["total_status_code_count"]["499"]')
+	total_status_500=$(echo "${output}" | jq '.["total_status_code_count"]["500"]')
+	total_status_501=$(echo "${output}" | jq '.["total_status_code_count"]["501"]')
+	total_status_502=$(echo "${output}" | jq '.["total_status_code_count"]["502"]')
+	total_status_503=$(echo "${output}" | jq '.["total_status_code_count"]["503"]')
+	total_status_504=$(echo "${output}" | jq '.["total_status_code_count"]["504"]')
+	count=$(echo "${output}" | jq '.["count"]')
+	total_count=$(echo "${output}" | jq '.["total_count"]')
+	total_response_time=$(echo "${output}" | jq '.["total_response_time_sec"]')
+	total_response_size=$(echo "${output}" | jq '.["total_response_size"]')
+	average_response_time=$(echo "${output}" | jq '.["average_response_time"]')
+	average_response_size=$(echo "${output}" | jq '.["average_response_size"]')
+	average_metrics_timers=$(echo "${output}" | jq '.["average_metrics_timers"]')
+	average_metrics_count=$(echo "${output}" | jq '.["average_metrics_count"]')
 }
 
 send_statistics() {
