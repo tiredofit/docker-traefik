@@ -10,5 +10,5 @@ liftoff
 
 print_start "Starting traefik ${TRAEFIK_VERSION}"
 if [ "${LOG_TYPE}" = "file" ] ; then silent_arg="silent" ; fi
-${silent_arg} s6-setuidgid traefik exec traefik \
+${silent_arg} s6-setuidgid "${TRAEFIK_USER}" exec traefik \
                                     --configfile "${CONFIG_PATH}"/"${CONFIG_FILE}" ${TRAEFIK_ARGS}
