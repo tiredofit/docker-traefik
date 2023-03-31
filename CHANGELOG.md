@@ -1,3 +1,15 @@
+## 2.9-2.10.0 2023-03-31 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add option for Metrics exporting via Prometheus
+
+   ### Changed
+      - Fix issue with TRAEFIK_USER not being respected on startup
+
+   ### Reverted
+      - Removal of old Zabbix monitoring templates and agent config leftover from Traefik 1.x
+
+
 ## 2.9-2.9 2023-03-30 <dave at tiredofit dot ca>
 
    ### Changed

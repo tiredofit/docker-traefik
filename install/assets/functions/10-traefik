@@ -8,8 +8,6 @@ configure_zabbix() {
 # Find Companion Zabbix Server Templates at https://github.com/tiredofit/docker-traefik
 # Autoregister=traefik
 EOF
-
-        echo "* * * * *  ${ZABBIX_CONFIG_PATH}/${ZABBIX_CONFIG_FILE}.d/scripts/traefik.sh > /dev/null 2&>1" > /assets/cron/zabbix_traefik.txt
     fi
 }
 
