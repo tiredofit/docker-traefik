@@ -40,7 +40,6 @@ RUN source /assets/functions/00-container && \
                     && \
     package install .traefik-run-deps \
             apache2-utils \
-            jq \
             && \
     \
 ## Multi Arch Support

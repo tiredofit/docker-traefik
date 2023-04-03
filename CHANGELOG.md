@@ -1,3 +1,9 @@
+## 2.9-2.11.0 2023-04-03 <dave at tiredofit dot ca>
+
+   ### Reverted
+      - Pull jq from image again
+
+
 ## 2.9-2.10.0 2023-03-31 <dave at tiredofit dot ca>
 
    ### Added
