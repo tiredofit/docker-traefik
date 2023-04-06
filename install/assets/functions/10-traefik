@@ -156,7 +156,7 @@ EOF
 
         if var_true "${ENABLE_METRICS}" ; then
                 yq -i   '
-                            .entryPoints.'$(echo "${METRICS_ENTRYPOINT}"'.address = "'$(echo "${METRICS_LISTEN_IP}:${METRICS_LISTEN_PORT}")'"
+                            .entryPoints.'$(echo "${METRICS_ENTRYPOINT}")'.address = "'$(echo "${METRICS_LISTEN_IP}:${METRICS_LISTEN_PORT}")'"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
         fi
 

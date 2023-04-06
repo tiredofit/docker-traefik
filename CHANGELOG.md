@@ -1,3 +1,9 @@
+## 2.9-2.9.2.12.0 2023-04-06 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Fix metrics if statement
+
+
 ## 2.9-2.11.1 2023-04-06 <dave at tiredofit dot ca>
 
    ### Added
