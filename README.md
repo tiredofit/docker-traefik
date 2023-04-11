@@ -176,7 +176,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | --------------------------- | ----------------------------------------------------------- | ------------------------------- |
 | `ENABLE_DOCKER`             | Enable Docker Mode                                          | `TRUE`                          |
 | `DOCKER_ENDPOINT`           | How to connect to Docker                                    | `unix:///var/run/docker.sock`   |
-| `DOCKER_CONSTANTS`          | Docker Constraints                                          | `""`                            |
+| `DOCKER_CONSTRAINTS`        | Docker Constraints                                          | `""`                            |
 | `DOCKER_DEFAULT_HOST_RULE`  | Docker Access rule - Default: Host(`{{ normalize .Name }}`) | "Host(`{{ normalize .Name }}`)" |
 | `DOCKER_DEFAULT_NETWORK`    | Default Network for Traefik to operate on                   | `proxy`                         |
 | `DOCKER_HTTP_TIMEOUT`       | Timeout in seconds for HTTP connections                     | `600`                           |
