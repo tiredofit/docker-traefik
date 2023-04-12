@@ -211,7 +211,8 @@ EOF
                 mkdir -p "${LETSENCRYPT_STORAGE_PATH}"
             fi
             if [ $(stat -c %U "${LETSENCRYPT_STORAGE_PATH}") != "traefik" ] ; then chown traefik:traefik "${LETSENCRYPT_STORAGE_PATH}" ; fi
-            sudo -u traefik touch "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
+            touch "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
+            chown "${TRAEFIK_USER}" "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
             chmod 0600 "${LETSENCRYPT_STORAGE_PATH}"/"${LETSENCRYPT_STORAGE_FILE}"
 
             yq -i   '

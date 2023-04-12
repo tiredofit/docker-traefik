@@ -1,4 +1,10 @@
-## 2.9-2.9.2.12.0 2023-04-06 <dave at tiredofit dot ca>
+## 2.9-2.13.0 2023-04-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Set acme.json permissions as root and when change ownership after the fact to avoid a certificate loading error
+
+
+## 2.9-2.12.0 2023-04-06 <dave at tiredofit dot ca>
 
    ### Changed
       - Fix metrics if statement
