@@ -40,6 +40,12 @@ bootstrap_filesystem() {
 
 generate_configuration() {
     if [ "${SETUP_TYPE,,}" = "auto" ]; then
+        transform_file_var \
+                        DOCKER_ENDPOINT \
+                        LETSENCRYPT_EMAIL \
+                        DASHBOARD_HOSTNAME \
+                        DASHBOARD_ADMIN_USER \
+                        DASHBOARD_ADMIN_PASS
         if var_true "${ENABLE_LETSENCRYPT}"; then
             sanity_var LETSENCRYPT_EMAIL "Letsencrypt Email address"
             if [ "${LETSENCRYPT_CHALLENGE,,}" = "dns" ]; then

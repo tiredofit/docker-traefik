@@ -172,17 +172,17 @@ By Default this image is ready to run out of the box, without having to alter an
 | `LOG_LEVEL`         | Log levels `DEBUG` `INFO` `WARN` `ERROR` `FATAL`                | `ERROR`      |
 
 #### Docker Settings
-| Parameter                   | Description                                                 | Default                         |
-| --------------------------- | ----------------------------------------------------------- | ------------------------------- |
-| `ENABLE_DOCKER`             | Enable Docker Mode                                          | `TRUE`                          |
-| `DOCKER_ENDPOINT`           | How to connect to Docker                                    | `unix:///var/run/docker.sock`   |
-| `DOCKER_CONSTRAINTS`        | Docker Constraints                                          | `""`                            |
-| `DOCKER_DEFAULT_HOST_RULE`  | Docker Access rule - Default: Host(`{{ normalize .Name }}`) | "Host(`{{ normalize .Name }}`)" |
-| `DOCKER_DEFAULT_NETWORK`    | Default Network for Traefik to operate on                   | `proxy`                         |
-| `DOCKER_HTTP_TIMEOUT`       | Timeout in seconds for HTTP connections                     | `600`                           |
-| `ENABLE_DOCKER_SWARM_MODE`  | Enable Swarm Mode                                           | `FALSE`                         |
-| `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds                                    | `15`                            |
-| `DOCKER_EXPOSE_CONTAINERS`  | Expose Containers by Default                                | `FALSE`                         |
+| Parameter                   | Description                                                 | Default                         | `_FILE` |
+| --------------------------- | ----------------------------------------------------------- | ------------------------------- | ------- |
+| `ENABLE_DOCKER`             | Enable Docker Mode                                          | `TRUE`                          |         |
+| `DOCKER_ENDPOINT`           | How to connect to Docker                                    | `unix:///var/run/docker.sock`   | x       |
+| `DOCKER_CONSTRAINTS`        | Docker Constraints                                          | `""`                            |         |
+| `DOCKER_DEFAULT_HOST_RULE`  | Docker Access rule - Default: Host(`{{ normalize .Name }}`) | "Host(`{{ normalize .Name }}`)" |         |
+| `DOCKER_DEFAULT_NETWORK`    | Default Network for Traefik to operate on                   | `proxy`                         |         |
+| `DOCKER_HTTP_TIMEOUT`       | Timeout in seconds for HTTP connections                     | `600`                           |         |
+| `ENABLE_DOCKER_SWARM_MODE`  | Enable Swarm Mode                                           | `FALSE`                         |         |
+| `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds                                    | `15`                            |         |
+| `DOCKER_EXPOSE_CONTAINERS`  | Expose Containers by Default                                | `FALSE`                         |         |
 
 #### HTTP/HTTPS Settings
 | Parameter                        | Description                                         | Default                                                                          |
@@ -220,22 +220,22 @@ By Default this image is ready to run out of the box, without having to alter an
 |                                  |                                                     | `TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305`                                           |
 
 #### LetsEncrypt Settings
-| Parameter                         | Description                                                                              | Default              |
-| --------------------------------- | ---------------------------------------------------------------------------------------- | -------------------- |
-| `ENABLE_LETSENCRYPT`              | Enable LetsEncrypt Certificate Generation                                                | `TRUE`               |
-| `LETSENCRYPT_EMAIL`               | Email address to register with Letsencrypt                                               |                      |
-| `LETSENCRYPT_CHALLENGE`           | Use `HTTP`, `TLS`, or `DNS` Challenges                                                   | `HTTP`               |
-| `LETSENCRYPT_KEYTYPE`             | Keytype to use `EC256` `EC384` `RSA2048` `RSA4096` `RSA8192`                             | `RSA4096`            |
-| `LETSENCRYPT_SERVER`              | Use `PRODUCTION` or `STAGING` server                                                     | `PRODUCTION`         |
-| `LETSENCRYPT_STORAGE_FILE`        | What file to store ACME certificates in                                                  | `acme.json`          |
-| `LETSENCRYPT_STORAGE_PATH`        | What path to store ACME certificates in: `/traefik/certs/`                               | `${DATA_PATH}/certs` |
-| `LETSENCRYPT_DNS_PROVIDER`        | See [Traefik Documentation](https://docs.traefik.io) for values if using `DNS` Challenge |                      |
-| `LETSENCRYPT_DNS_RESOLVER`        | Comma Seperated values values if using `DNS` Challenge e.g. `1.1.1.1:53,1.0.0.1:53`      |                      |
-| `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challenging                                                      | `15`                 |
-| `LETSENCRYPT_DNS_DOMAIN1_MAIN`    | Single Value Domain Name for Wildcards e.g. `local1.com`                                 |                      |
-| `LETSENCRYPT_DNS_DOMAIN1_SANS`    | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`     |                      |
-| `LETSENCRYPT_DNS_DOMAIN2_MAIN`    | Similar to above, with additional number tacked on..                                     |                      |
-| `LETSENCRYPT_DNS_DOMAIN2_SANS`    | Similar to above with additional number tacked on..                                      |                      |
+| Parameter                         | Description                                                                              | Default              | `_FILE` |
+| --------------------------------- | ---------------------------------------------------------------------------------------- | -------------------- | ------- |
+| `ENABLE_LETSENCRYPT`              | Enable LetsEncrypt Certificate Generation                                                | `TRUE`               |         |
+| `LETSENCRYPT_EMAIL`               | Email address to register with Letsencrypt                                               |                      | x       |
+| `LETSENCRYPT_CHALLENGE`           | Use `HTTP`, `TLS`, or `DNS` Challenges                                                   | `HTTP`               |         |
+| `LETSENCRYPT_KEYTYPE`             | Keytype to use `EC256` `EC384` `RSA2048` `RSA4096` `RSA8192`                             | `RSA4096`            |         |
+| `LETSENCRYPT_SERVER`              | Use `PRODUCTION` or `STAGING` server                                                     | `PRODUCTION`         |         |
+| `LETSENCRYPT_STORAGE_FILE`        | What file to store ACME certificates in                                                  | `acme.json`          |         |
+| `LETSENCRYPT_STORAGE_PATH`        | What path to store ACME certificates in: `/traefik/certs/`                               | `${DATA_PATH}/certs` |         |
+| `LETSENCRYPT_DNS_PROVIDER`        | See [Traefik Documentation](https://docs.traefik.io) for values if using `DNS` Challenge |                      |         |
+| `LETSENCRYPT_DNS_RESOLVER`        | Comma Seperated values values if using `DNS` Challenge e.g. `1.1.1.1:53,1.0.0.1:53`      |                      |         |
+| `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challenging                                                      | `15`                 |         |
+| `LETSENCRYPT_DNS_DOMAIN1_MAIN`    | Single Value Domain Name for Wildcards e.g. `local1.com`                                 |                      |         |
+| `LETSENCRYPT_DNS_DOMAIN1_SANS`    | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`     |                      |         |
+| `LETSENCRYPT_DNS_DOMAIN2_MAIN`    | Similar to above, with additional number tacked on..                                     |                      |         |
+| `LETSENCRYPT_DNS_DOMAIN2_SANS`    | Similar to above with additional number tacked on..                                      |                      |         |
 
 **If using DNS Challenges, you will need to add additional Environment Variables for your DNS servers API/credentials** See Traefik Documentation.
 
@@ -250,16 +250,16 @@ By Default this image is ready to run out of the box, without having to alter an
 
 #### API / Dashboard Settings
 
-| Parameter                         | Description                                                  | Default   |
-| --------------------------------- | ------------------------------------------------------------ | --------- |
-| `ENABLE_API`                      | Enable Dashboard                                             | `TRUE`    |
-| `ENABLE_PING`                     | Enable Ping test/Health Check                                | `TRUE`    |
-| `ENABLE_DASHBOARD`                | Enable Dashboard                                             | `TRUE`    |
-| `DASHBOARD_HOSTNAME`              | Hostname to respond for Dashboard e.g. `traefik.example.com` |           |
-| `ENABLE_DASHBOARD_AUTHENTICATION` | Enable Dashboard Authentication                              | `TRUE`    |
-| `DASHBOARD_ADMIN_USER`            | Username for access to Dashboard                             | `admin`   |
-| `DASHBOARD_ADMIN_PASS`            | Password for access to Dashboard                             | `traefik` |
-| `DASHBOARD_AUTHENTICATION`        | Only type is `BASIC` at this time                            |           |
+| Parameter                         | Description                                                  | Default   | `_FILE` |
+| --------------------------------- | ------------------------------------------------------------ | --------- | ------- |
+| `ENABLE_API`                      | Enable Dashboard                                             | `TRUE`    |         |
+| `ENABLE_PING`                     | Enable Ping test/Health Check                                | `TRUE`    |         |
+| `ENABLE_DASHBOARD`                | Enable Dashboard                                             | `TRUE`    |         |
+| `DASHBOARD_HOSTNAME`              | Hostname to respond for Dashboard e.g. `traefik.example.com` |           | x       |
+| `ENABLE_DASHBOARD_AUTHENTICATION` | Enable Dashboard Authentication                              | `TRUE`    |         |
+| `DASHBOARD_ADMIN_USER`            | Username for access to Dashboard                             | `admin`   | x       |
+| `DASHBOARD_ADMIN_PASS`            | Password for access to Dashboard                             | `traefik` | x       |
+| `DASHBOARD_AUTHENTICATION`        | Only type is `BASIC` at this time                            |           |         |
 
 #### Certificate Dumper Settings
 
