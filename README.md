@@ -198,7 +198,9 @@ By Default this image is ready to run out of the box, without having to alter an
 | `HTTP_TIMEOUT_WRITE`             | Write Timeout                                       | `0`                                                                              |
 | `ENABLE_COMPRESSION_HTTP`        | Enable Gzip Compression                             | `TRUE`                                                                           |
 | `ENABLE_HTTP_PROXY_PROTOCOL`     | Enable HTTP Proxy Protocol Support                  | `FALSE`                                                                          |
+| `ENABLE_HTTP3`                   | Enable HTTP3 support                                | `FALSE`                                                                          |
 | `ENABLE_HTTPS`                   | Enable HTTPS Support                                | `TRUE`                                                                           |
+| `HTTP3_LISTEN_PORT`              | UDP port to bind for HTTP3                          | `443`                                                                            |
 | `HTTPS_ENTRYPOINT`               | Name of HTTP Entrypoint                             | `websecure`                                                                      |
 | `ENABLE_HTTPS_FORWARDED_HEADERS` | Enable HTTPS Forwarded Headers                      | `FALSE`                                                                          |
 | `HTTPS_LISTEN_IP`                | Address to bind for HTTP                            | `0.0.0.0`                                                                        |

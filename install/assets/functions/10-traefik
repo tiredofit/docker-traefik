@@ -161,6 +161,13 @@ EOF
             fi
         fi
 
+        if var_true "${ENABLE_HTTP3}" ; then
+                yq -i   '
+                            .experimental.http3 = true |
+                            .entryPoints.websecure.http3.advertisedPort = "'$(echo "${HTTP3_LISTEN_PORT}")'"
+                        ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+        fi
+
         if var_true "${ENABLE_METRICS}" ; then
                 yq -i   '
                             .entryPoints.'$(echo "${METRICS_ENTRYPOINT}")'.address = "'$(echo "${METRICS_LISTEN_IP}:${METRICS_LISTEN_PORT}")'"

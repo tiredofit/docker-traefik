@@ -1,3 +1,10 @@
+## 2.10-2.15.0 2023-04-27 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.10.1
+      - Add HTTP3 Support
+
+
 ## 2.10-2.14.0 2023-04-26 <dave at tiredofit dot ca>
 
    ### Added
