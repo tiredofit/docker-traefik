@@ -1,3 +1,9 @@
+## 2.10-2.18.0 2023-06-19 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.10.3
+
+
 ## 2.10-2.17.0 2023-06-19 <dave at tiredofit dot ca>
 
    ### Added
