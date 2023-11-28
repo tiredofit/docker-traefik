@@ -1,3 +1,9 @@
+## 2.10-2.10-2.21 2023-11-28 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.10.6
+
+
 ## 2.10-2.20 2023-10-11 <dave at tiredofit dot ca>
 
 All users should upgrade IMMEDIATELY to resolve the CVE-2023-39325 HTTP/2 issue
