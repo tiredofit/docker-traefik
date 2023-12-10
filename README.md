@@ -234,10 +234,7 @@ By Default this image is ready to run out of the box, without having to alter an
 | `LETSENCRYPT_DNS_PROVIDER`        | See [Traefik Documentation](https://docs.traefik.io) for values if using `DNS` Challenge |                      |         |
 | `LETSENCRYPT_DNS_RESOLVER`        | Comma Seperated values values if using `DNS` Challenge e.g. `1.1.1.1:53,1.0.0.1:53`      |                      |         |
 | `LETSENCRYPT_DNS_CHALLENGE_DELAY` | Wait for seconds before challenging                                                      | `15`                 |         |
-| `LETSENCRYPT_DNS_DOMAIN1_MAIN`    | Single Value Domain Name for Wildcards e.g. `local1.com`                                 |                      |         |
-| `LETSENCRYPT_DNS_DOMAIN1_SANS`    | Comma Seperated Values of Alternative Domains eg `test1.local1.com,test2.local1.com`     |                      |         |
-| `LETSENCRYPT_DNS_DOMAIN2_MAIN`    | Similar to above, with additional number tacked on..                                     |                      |         |
-| `LETSENCRYPT_DNS_DOMAIN2_SANS`    | Similar to above with additional number tacked on..                                      |                      |         |
+| `LETSENCRYPT_WILDCARD_DOMAINS`    | Create wildcard domains in this comma seperated values e.g. `example.com,domain.tld`     |                      | x       |
 
 **If using DNS Challenges, you will need to add additional Environment Variables for your DNS servers API/credentials** See Traefik Documentation.
 

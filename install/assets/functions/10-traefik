@@ -43,10 +43,12 @@ generate_configuration() {
         transform_file_var \
                         DOCKER_ENDPOINT \
                         LETSENCRYPT_EMAIL \
+                        LETSENCRYPT_WILDCARD_DOMAINS \
                         DASHBOARD_HOSTNAME \
                         DASHBOARD_ADMIN_USER \
                         DASHBOARD_ADMIN_PASS
 
+        ## TODO - Overwrite CF_API_EMAIL/CF_API_KEY with our own envs and then pass through upon container start
         if var_true "${ENABLE_LETSENCRYPT}"; then
             sanity_var LETSENCRYPT_EMAIL "Letsencrypt Email address"
             if [ "${LETSENCRYPT_CHALLENGE,,}" = "dns" ]; then
@@ -158,6 +160,14 @@ EOF
                             .entryPoints.websecure.http.tls.options = "default" |
                             .entryPoints.websecure.http.tls.certResolver = "letsencrypt"
                         ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+            fi
+
+            if [ -n "${LETSENCRYPT_WILDCARD_DOMAINS}" ]; then
+                for wildcard_domain in $(echo ${LETSENCRYPT_WILDCARD_DOMAINS} | tr "," "\n" | uniq); do
+                     yq -i  '
+                                .entryPoints.websecure.http.tls.domains += [ { "main": "'$(echo "${wildcard_domain}")'" , "sans": [ "*.'$(echo "${wildcard_domain}")'" ] }]
+                            ' "${CONFIG_PATH}"/"${CONFIG_FILE}"
+                done
             fi
         fi
 

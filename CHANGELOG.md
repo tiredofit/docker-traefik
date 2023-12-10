@@ -1,3 +1,9 @@
+## 2.10-2.24 2023-12-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Add LETSENCRYPT_WILDCARD_DOMAINS to take comma seperated values to generate wildcard certificates for these domains
+
+
 ## 2.10-2.10-2.23 2023-12-08 <dave at tiredofit dot ca>
 
    ### Added
