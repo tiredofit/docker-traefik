@@ -1,3 +1,9 @@
+## 2.10-2.10-2.25 2023-12-12 <dave at tiredofit dot ca>
+
+   ### Changed
+      - Don't keep dashboard.yml avaialble when ENABLE_DASHBOARD/API = FALSE
+
+
 ## 2.10-2.24 2023-12-10 <dave at tiredofit dot ca>
 
    ### Added

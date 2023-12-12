@@ -315,7 +315,11 @@ EOF
                     esac
 
                 fi
+            else
+                rm -rf /assets/traefik/dynamic/dashboard.yml
             fi
+        else
+            rm -rf /assets/traefik/dynamic/dashboard.yml
         fi
 
         #### Logging

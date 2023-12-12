@@ -1,8 +1,7 @@
-version: '2.4'
 services:
 
   traefik-app:
-    image: tiredofit/traefik:2.9
+    image: tiredofit/traefik:2.10
     container_name: traefik-app
     environment:
       - CONTAINER_NAME=traefik-app
