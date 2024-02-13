@@ -88,6 +88,8 @@ The following image tags are available along with their tagged release based on 
 
 | Traefik Version | OS Base | Tag           |
 | --------------- | ------- | ------------- |
+| 2.11.x          | Alpine  | `:2.11-latest` |
+| 2.10.x          | Alpine  | `:2.10-latest` |
 | latest          | Alpine  | `:latest`     |
 | 2.9.x           | Alpine  | `:2.9-latest` |
 | 2.8.x           | Alpine  | `:2.8-latest` |
@@ -129,7 +131,7 @@ The following directories/files should be mapped for persistent storage in order
 | `/data/config/custom`  | (Optional) - If using manual mode and wish to add dynamic File configuration, add it in here (.yml) |
 | `/data/logs`           | (Optional) - Logfiles if you wish to store to files                                                 |
 | `/data/certs`          | (Optional) - If you wish to utilize ACME/LetsEncrypt Certificates or SSL map this directory         |
-| `/var/run/docker.sock` | Easiest way to get going - Map the hosts docker socket to the container                             |
+| `/var/run/docker.sock` | Easiest way to get going - Map the hosts docker socket to the container. Alternatively, use socket-proxy |
 
 ### Environment Variables
 

@@ -14,6 +14,8 @@ services:
       - CF_API_KEY=randomapikeyfromcloudflare
 
       - DASHBOARD_HOSTNAME=traefik.example.com
+      - DOCKER_ENDPOINT=http://socket-proxy:2375 
+      # - DOCKER_ENDPOINT=unix:///var/run/docker.sock
     ports:
       - 80:80
       - 443:443
@@ -21,10 +23,14 @@ services:
       - ./config:/data/config
       - ./logs:/data/logs
       - ./certs:/data/certs
-      - /var/run/docker.sock:/var/run/docker.sock
+      # - /var/run/docker.sock:/var/run/docker.sock # if not using socket-proxy
     networks:
       - proxy
+      - socket-proxy 
+    depends_on:
+      - socket-proxy
     restart: always
+    
 
   whoami:
     container_name: whoami
@@ -36,6 +42,22 @@ services:
     networks:
       - proxy
     restart: always
+
+socket-proxy:
+    image: tiredofit/socket-proxy:latest
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./logs/socket-proxy:/logs
+    environment:
+      - ALLOWED_IPS=127.0.0.1,172.19.0.0/16 # depends on the range you assigned to the socket-proxy network
+      - ENABLE_READONLY=FALSE
+      - MODE=ALL # containers,events,networks,ping,services,tasks,version
+    networks:
+      socket-proxy:
+        aliases:
+          - socket-proxy
+    restart: "unless-stopped"
 
 networks:
   proxy:
