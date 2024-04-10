@@ -1,3 +1,9 @@
+## 2.11-2.11-2.27 2024-04-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 2.11.1
+
+
 ## 2.11-2.26.0 2024-02-12 <dave at tiredofit dot ca>
 
    ### Added
