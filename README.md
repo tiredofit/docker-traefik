@@ -88,9 +88,9 @@ The following image tags are available along with their tagged release based on 
 
 | Traefik Version | OS Base | Tag           |
 | --------------- | ------- | ------------- |
+| 3.0.x           | Alpine  : `:3.0-latest` |
 | 2.11.x          | Alpine  | `:2.11-latest` |
 | 2.10.x          | Alpine  | `:2.10-latest` |
-| latest          | Alpine  | `:latest`     |
 | 2.9.x           | Alpine  | `:2.9-latest` |
 | 2.8.x           | Alpine  | `:2.8-latest` |
 | 2.7.x           | Alpine  | `:2.7-latest` |
@@ -183,7 +183,6 @@ By Default this image is ready to run out of the box, without having to alter an
 | `DOCKER_DEFAULT_NETWORK`    | Default Network for Traefik to operate on                   | `proxy`                         |         |
 | `DOCKER_HTTP_TIMEOUT`       | Timeout in seconds for HTTP connections                     | `600`                           |         |
 | `ENABLE_DOCKER_SWARM_MODE`  | Enable Swarm Mode                                           | `FALSE`                         |         |
-| `DOCKER_SWARM_MODE_REFRESH` | Swarm refresh in seconds                                    | `15`                            |         |
 | `DOCKER_EXPOSE_CONTAINERS`  | Expose Containers by Default                                | `FALSE`                         |         |
 
 #### HTTP/HTTPS Settings
