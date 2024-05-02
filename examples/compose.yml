@@ -1,7 +1,7 @@
 services:
 
   traefik-app:
-    image: tiredofit/traefik:3.11
+    image: tiredofit/traefik:3.0-latest
     container_name: traefik-app
     environment:
       - CONTAINER_NAME=traefik-app
