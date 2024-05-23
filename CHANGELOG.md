@@ -1,3 +1,9 @@
+## 3.0-2.12.1 2024-05-22 <dave at tiredofit dot ca>
+
+   ### Added
+      - Switch to tiredofit/alpine 3.20 base
+
+
 ## 3.0-2.12.0 2024-05-22 <dave at tiredofit dot ca>
 
    ### Added
