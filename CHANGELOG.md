@@ -1,3 +1,9 @@
+## 3.0-3.0-2.13 2024-06-10 <dave at tiredofit dot ca>
+
+   ### Added
+      - Traefik 3.0.2
+
+
 ## 3.0-2.12.1 2024-05-22 <dave at tiredofit dot ca>
 
    ### Added
