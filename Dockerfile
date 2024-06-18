@@ -7,7 +7,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ARG TRAEFIK_VERSION
 ARG TRAEFIK_CERT_DUMPER_VERSION
 
-ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v3.0.2"} \
+iENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v3.0.3"} \
     TRAEFIK_CERT_DUMPER_VERSION=${TRAEFIK_CERT_DUMPER_VERSION:-"v2.8.3"} \
     TRAEFIK_REPO_URL=${TRAEFIK_REPO_URL:-"https://github.com/traefik/traefik"} \
     TRAEFIK_CERT_DUMPER_REPO_URL=${TRAEFIK_CERT_DUMPER_REPO_URL:-"https://github.com/ldez/traefik-certs-dumper"} \
