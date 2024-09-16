@@ -1,5 +1,5 @@
 ARG DISTRO="alpine"
-ARG DISTRO_VARIANT="3.19"
+ARG DISTRO_VARIANT="3.20"
 
 FROM docker.io/tiredofit/${DISTRO}:${DISTRO_VARIANT}
 LABEL maintainer="Dave Conroy (github.com/tiredofit)"
@@ -7,7 +7,7 @@ LABEL maintainer="Dave Conroy (github.com/tiredofit)"
 ARG TRAEFIK_VERSION
 ARG TRAEFIK_CERT_DUMPER_VERSION
 
-ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v2.11.8"} \
+ENV TRAEFIK_VERSION=${TRAEFIK_VERSION:-"v2.11.9"} \
     TRAEFIK_CERT_DUMPER_VERSION=${TRAEFIK_CERT_DUMPER_VERSION:-"v2.8.3"} \
     TRAEFIK_REPO_URL=${TRAEFIK_REPO_URL:-"https://github.com/traefik/traefik"} \
     TRAEFIK_CERT_DUMPER_REPO_URL=${TRAEFIK_CERT_DUMPER_REPO_URL:-"https://github.com/ldez/traefik-certs-dumper"} \
