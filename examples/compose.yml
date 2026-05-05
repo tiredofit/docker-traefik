@@ -1,7 +1,7 @@
 services:
 
   traefik-app:
-    image: docker.io/nfrastack/traefik:3.5
+    image: docker.io/nfrastack/traefik:3.7
     container_name: traefik-app
     ports:
       - 80:80
