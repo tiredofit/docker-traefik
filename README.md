@@ -68,9 +68,9 @@ Example:
 
 `ghcr.io/nfrastack/container-traefik:latest` or
 
-`ghcr.io/nfrastack/container-traefik:3.5-1.0`
+`ghcr.io/nfrastack/container-traefik:3.7-1.0`
 
-* `branch` will be the repositories branch, typically matching with the version of Traefik eg `3.5`
+* `branch` will be the repositories branch, typically matching with the version of Traefik eg `3.7`
 * `latest` will be the most recent commit
 * An optional `tag` may exist that matches the [CHANGELOG](CHANGELOG.md) - These are the safest
 
