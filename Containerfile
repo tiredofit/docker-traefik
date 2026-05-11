@@ -60,7 +60,7 @@ RUN echo "" && \
 	aarch64 | arm64) Arch='arm64' ;; \
     esac; \
     \
-    curl -sSL ${TRAEFIK_RERPO_URL}/traefik/releases/download/${TRAEFIK_VERSION}/traefik_${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
+    curl -sSL https://github.com/containous/traefik/releases/download/${TRAEFIK_VERSION}/traefik_${TRAEFIK_VERSION}_linux_${Arch}.tar.gz | tar xvfz - -C /usr/local/bin traefik && \
     chmod +x /usr/local/bin/traefik && \
     \
     container_build_log add "Traefik" "${TRAEFIK_VERSION}" "${TRAEFIK_REPO_URL}" && \
