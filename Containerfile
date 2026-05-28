@@ -52,7 +52,7 @@ RUN echo "" && \
                         TRAEFIKCERTDDUMPER_BUILD_DEPS \
                         TRAEFIK_RUN_DEPS \
                         && \
-    package build go && \
+    package build go buildtime && \
     package build yq && \
     \
     case "$(container_info arch)" in \
