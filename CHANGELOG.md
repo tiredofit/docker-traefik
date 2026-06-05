@@ -1,3 +1,9 @@
+## 3.7-4.2.8 2026-06-05 <code at nfrastack dot com>
+
+   ### Added
+      - Treafik 3.7.4
+
+
 ## 3.7-4.2.7 2026-06-04 <code at nfrastack dot com>
 
    ### Added
