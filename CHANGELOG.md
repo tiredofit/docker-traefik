@@ -1,3 +1,10 @@
+## 3.6-4.2.7 2026-06-10 <code at nfrastack dot com>
+
+   ### Added
+      - Traefik 3.6.21
+      - Alpine 3.24
+
+
 ## 3.6-4.2.6 2026-06-05 <code at nfrastack dot com>
 
    ### Added
