@@ -18,7 +18,7 @@ LABEL \
         org.opencontainers.image.licenses="MIT"
 ARG \
     TRAEFIK_VERSION="v3.7.5" \
-    TRAEFIK_CERT_DUMPER_VERSION="v2.11.3" \
+    TRAEFIK_CERT_DUMPER_VERSION="v2.11.4" \
     TRAEFIK_REPO_URL="https://github.com/traefik/traefik" \
     TRAEFIK_CERT_DUMPER_REPO_URL="https://github.com/ldez/traefik-certs-dumper"
 
