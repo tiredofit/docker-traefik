@@ -17,7 +17,7 @@ LABEL \
         org.opencontainers.image.vendor="Nfrastack <https://www.nfrastack.com>" \
         org.opencontainers.image.licenses="MIT"
 ARG \
-    TRAEFIK_VERSION="v3.7.8" \
+    TRAEFIK_VERSION="v3.7.9" \
     TRAEFIK_CERT_DUMPER_VERSION="v2.11.4" \
     TRAEFIK_REPO_URL="https://github.com/traefik/traefik" \
     TRAEFIK_CERT_DUMPER_REPO_URL="https://github.com/ldez/traefik-certs-dumper"
