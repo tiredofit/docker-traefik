@@ -1,3 +1,9 @@
+## 3.7-4.2.15 2026-08-26 <code at nfrastack dot com>
+
+   ### Added
+      - Traefik 3.7.12
+
+
 ## 3.7-4.2.14 2026-08-19 <code at nfrastack dot com>
 
    ### Added
